@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import axios from 'axios';
-import { API_HOST, API_PORT } from '@env';
-
+import { API_PORT } from '@env';
+const API_HOST = '10.0.2.2';
 const baseUrl = `http://${API_HOST}:${API_PORT}/api`;
 
 export interface CallApiOptions {

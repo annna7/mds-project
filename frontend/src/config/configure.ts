@@ -1,5 +1,5 @@
-import { API_PORT, API_HOST, AUTH0_DOMAIN, AUTH0_CLIENT_ID, GOOGLE_MAPS_API_KEY } from '@env';
-
+import { API_PORT, AUTH0_DOMAIN, AUTH0_CLIENT_ID, GOOGLE_MAPS_API_KEY } from '@env';
+const API_HOST = '10.0.2.2';
 export const config = {
 	api: {
 		baseUrl: `http://${API_HOST}:${API_PORT}`
