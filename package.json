@@ -7,5 +7,9 @@
   "scripts": {
     "start:both": "concurrently \"npm run --prefix frontend start\" \"npm run --prefix backend dev\"",
     "clear-ports:windows": "@echo off \n for /f \"tokens=5\" %%a in ('netstat -aon ^| findstr :3000') do taskkill /F /PID %%a \n for /f \"tokens=5\" %%a in ('netstat -aon ^| findstr :8000') do taskkill /F /PID %%a"
+  },
+  "dependencies": {
+    "formik": "^2.4.6",
+    "yup": "^1.4.0"
   }
 }

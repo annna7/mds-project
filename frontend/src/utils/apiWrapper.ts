@@ -2,8 +2,9 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import axios from 'axios';
 import { API_HOST, API_PORT } from '@env'; // Assuming you're using react-native-dotenv
 import { useAuth } from '@clerk/clerk-expo'; // Adjust the import based on your setup
+const apiHost = '10.0.2.2';
 
-const baseUrl = `http://${API_HOST}:${API_PORT}/api`;
+const baseUrl = `http://${apiHost}:${API_PORT}/api`;
 
 export interface CallApiOptions {
 	method?: 'GET' | 'POST' | 'PUT' | 'DELETE',

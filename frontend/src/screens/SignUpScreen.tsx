@@ -4,9 +4,18 @@ import Background from '../components/Background';
 import { TextInput } from '../components';
 import Button from '../components/Button';
 import Logo from '../components/Logo';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 export default function SignUpScreen() {
 	const { isLoaded, signUp, setActive } = useSignUp();
+	const validationSchema = Yup.object().shape({
+		firstName: Yup.string().required('First name is required'),
+		lastName: Yup.string().required('Last name is required'),
+		username: Yup.string().required('Username is required'),
+		emailAddress: Yup.string().email('Invalid email').required('Email is required'),
+		password: Yup.string().required('Password is required'),
+	});
 
 	const [firstName, setFirstName] = React.useState('');
 	const [lastName, setLastName] = React.useState('');
