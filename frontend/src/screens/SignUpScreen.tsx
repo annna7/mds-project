@@ -4,10 +4,12 @@ import Background from '../components/Background';
 import { TextInput } from '../components';
 import Button from '../components/Button';
 import Logo from '../components/Logo';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { useState } from 'react';
 
 export default function SignUpScreen() {
 	const { isLoaded, signUp, setActive } = useSignUp();
-
+	const [spinnerVisible, setSpinnerVisible] = useState(false);
 	const [firstName, setFirstName] = React.useState('');
 	const [lastName, setLastName] = React.useState('');
 	const [username, setUsername] = React.useState('');
@@ -19,6 +21,7 @@ export default function SignUpScreen() {
 	const renderFirstRegistrationStep = () => {
 		return (
 			<Background>
+				<Spinner visible={spinnerVisible} textContent={'Loading....'} />
 				<Logo/>
 				<TextInput
 					autoCapitalize="none"
@@ -71,6 +74,7 @@ export default function SignUpScreen() {
 	const renderSecondVerificationStep = () => {
 		return (
 			<Background>
+				<Spinner visible={spinnerVisible} textContent={'Loading....'} />
 				<Logo/>
 				<TextInput
 					value={code}
@@ -90,7 +94,7 @@ export default function SignUpScreen() {
 		if (!isLoaded) {
 			return;
 		}
-
+		setSpinnerVisible(true);
 		try {
 			await signUp.create({
 				firstName,
@@ -101,11 +105,13 @@ export default function SignUpScreen() {
 			});
 
 			await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
+			setSpinnerVisible(false);
 
 			setIsPending(true);
 
 		} catch (err: any) {
 			console.error(JSON.stringify(err, null, 2));
+			setSpinnerVisible(false);
 		}
 	};
 
@@ -115,15 +121,17 @@ export default function SignUpScreen() {
 		if (!isLoaded) {
 			return;
 		}
-
+		setSpinnerVisible(true);
 		try {
 			const completeSignUp = await signUp.attemptEmailAddressVerification({
 				code
 			});
 
 			await setActive({ session: completeSignUp.createdSessionId });
+			setSpinnerVisible(false);
 		} catch (err: any) {
 			console.error(JSON.stringify(err, null, 2));
+			setSpinnerVisible(false);
 		}
 	};
 
