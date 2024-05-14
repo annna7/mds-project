@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useSignUp } from '@clerk/clerk-expo';
 import Background from '../components/Background';
 import { TextInput } from '../components';
+import { Text } from 'react-native';
 import Button from '../components/Button';
 import Logo from '../components/Logo';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -16,7 +17,10 @@ const signUpValidationSchema = Yup.object().shape({
 		.matches(/[A-Z]/, 'Password must contain at least one uppercase letter'),
 	firstName: Yup.string().required('First name is required'),
 	lastName: Yup.string().required('Last name is required'),
-	username: Yup.string().required('Username is required'),
+	username: Yup.string().required('Username is required').min(4, 'Username must be at least 4 characters'),
+});
+const verificationCodeValidationSchema = Yup.object().shape({
+	code: Yup.number().required('Verification code is required').typeError('Verification code must be a number'),
 });
 export default function SignUpScreen() {
 	const { isLoaded, signUp, setActive } = useSignUp();
@@ -28,19 +32,19 @@ export default function SignUpScreen() {
 	const [password, setPassword] = React.useState('');
 	const [code, setCode] = React.useState('');
 	const [isPending, setIsPending] = React.useState(false);
-
+	const [alreadyUsedMail, setAlreaduUsedMail] = useState(false);
 	const renderFirstRegistrationStep = () => {
 		return (
 			<Background>
 				<Spinner visible={spinnerVisible} textContent={'Loading....'} />
 				<Logo/>
 				<Formik
-					initialValues={{ emailAddress: '', password: '', firstName: '', lastName:'', username:'' }}
+					initialValues={{ firstName: '', lastName: '', username: '', emailAddress:'', password:'' }}
 					validationSchema={signUpValidationSchema}
-					onSubmit={onSignUpPress} // Pass the custom submit function
+					onSubmit={onSignUpPress}
 				>
 					{({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-						<>
+							<>
 							<TextInput
 								label="First Name"
 								returnKeyType="next"
@@ -88,6 +92,7 @@ export default function SignUpScreen() {
 								error={!!(touched.emailAddress && errors.emailAddress)}
 								errorMessage={touched.emailAddress && errors.emailAddress ? errors.emailAddress : undefined}
 							/>
+							{alreadyUsedMail && <Text style={{ color: 'red' }}>Email already used. Please provide another email address.</Text>}
 
 							<TextInput
 								label="Password"
@@ -102,7 +107,7 @@ export default function SignUpScreen() {
 								errorMessage={touched.password && errors.password ? errors.password : undefined}
 							/>
 
-							<Button mode="contained" onPress={onSignUpPress}>
+							<Button mode="contained" onPress={() => handleSubmit()}>
 								Continue
 							</Button>
 						</>
@@ -115,43 +120,60 @@ export default function SignUpScreen() {
 
 	const renderSecondVerificationStep = () => {
 		return (
-			<Background>
-				<Spinner visible={spinnerVisible} textContent={'Loading....'} />
-				<Logo/>
-				<TextInput
-					value={code}
-					placeholder="Code..."
-					onChangeText={(code) => {
-						setCode(code);
-					}}
-				/>
-				<Button mode="contained" onPress={onPressVerify}>
-					Verify Email
-				</Button>
-			</Background>
+			<Formik
+				initialValues={{ code: '' }}
+				validationSchema={verificationCodeValidationSchema}
+				onSubmit={onPressVerify}
+			>
+				{({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+					<Background>
+						<Spinner visible={spinnerVisible} textContent={'Loading....'} />
+						<Logo/>
+						<TextInput
+							value={values.code}
+							placeholder="Code..."
+							onChangeText={handleChange('code')}
+							onBlur={handleBlur('code')}
+							error={!!(touched.code && errors.code)}
+							errorMessage={touched.code && errors.code ? errors.code : undefined}
+						/>
+						<Button mode="contained" onPress={() => handleSubmit()}>
+							Verify Email
+						</Button>
+					</Background>
+				)}
+			</Formik>
+
 		);
 	};
 
-	const onSignUpPress = async () => {
+	const onSignUpPress = async (values) => {
 		if (!isLoaded) {
 			return;
 		}
 		setSpinnerVisible(true);
 		try {
+			console.log(values.firstName);
+			console.log(values.lastName);
+			console.log(values.username);
+			console.log(values.emailAddress);
+			console.log(values.password);
+
 			await signUp.create({
-				firstName,
-				lastName,
-				username,
-				emailAddress,
-				password
+				firstName: values.firstName,
+				lastName: values.lastName,
+				username: values.username,
+				emailAddress: values.emailAddress,
+				password: values.password
 			});
+
+			console.log('am ajuns');
 
 			await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
 			setSpinnerVisible(false);
-
 			setIsPending(true);
-
-		} catch (err: any) {
+		} catch (err) {
+			setAlreaduUsedMail(true);
 			console.error(JSON.stringify(err, null, 2));
 			setSpinnerVisible(false);
 		}
@@ -159,23 +181,25 @@ export default function SignUpScreen() {
 
 
 
-	const onPressVerify = async () => {
+
+	const onPressVerify = async (values) => {
 		if (!isLoaded) {
 			return;
 		}
 		setSpinnerVisible(true);
 		try {
 			const completeSignUp = await signUp.attemptEmailAddressVerification({
-				code
+				code: values.code // Access the verification code from Formik values
 			});
 
 			await setActive({ session: completeSignUp.createdSessionId });
 			setSpinnerVisible(false);
-		} catch (err: any) {
+		} catch (err) {
 			console.error(JSON.stringify(err, null, 2));
 			setSpinnerVisible(false);
 		}
 	};
+
 
 	return (
 		<>
