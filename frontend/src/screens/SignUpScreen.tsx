@@ -6,7 +6,18 @@ import Button from '../components/Button';
 import Logo from '../components/Logo';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useState } from 'react';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
 
+const signUpValidationSchema = Yup.object().shape({
+	emailAddress: Yup.string().email('Invalid email').required('Email is required'),
+	password: Yup.string().required('Password is required')
+		.min(8, 'Password must be at least 8 characters')
+		.matches(/[A-Z]/, 'Password must contain at least one uppercase letter'),
+	firstName: Yup.string().required('First name is required'),
+	lastName: Yup.string().required('Last name is required'),
+	username: Yup.string().required('Username is required'),
+});
 export default function SignUpScreen() {
 	const { isLoaded, signUp, setActive } = useSignUp();
 	const [spinnerVisible, setSpinnerVisible] = useState(false);
@@ -23,50 +34,81 @@ export default function SignUpScreen() {
 			<Background>
 				<Spinner visible={spinnerVisible} textContent={'Loading....'} />
 				<Logo/>
-				<TextInput
-					autoCapitalize="none"
-					value={firstName}
-					placeholder="First Name..."
-					onChangeText={(firstName) => {
-						setFirstName(firstName);
-					}}
-				/>
-				<TextInput
-					autoCapitalize="none"
-					value={lastName}
-					placeholder="Last Name..."
-					onChangeText={(lastName) => {
-						setLastName(lastName);
-					}}
-				/>
-				<TextInput
-					autoCapitalize="none"
-					value={username}
-					placeholder="Username..."
-					onChangeText={(username) => {
-						setUsername(username);
-					}}
-				/>
-				<TextInput
-					autoCapitalize="none"
-					value={emailAddress}
-					placeholder="Email..."
-					onChangeText={(email) => {
-						setEmailAddress(email);
-					}}
-				/>
-				<TextInput
-					value={password}
-					placeholder="Password..."
-					placeholderTextColor="#000"
-					secureTextEntry={true}
-					onChangeText={(password) => {
-						setPassword(password);
-					}}
-				/>
-				<Button mode="contained" onPress={onSignUpPress}>
-					Continue
-				</Button>
+				<Formik
+					initialValues={{ emailAddress: '', password: '', firstName: '', lastName:'', username:'' }}
+					validationSchema={signUpValidationSchema}
+					onSubmit={onSignUpPress} // Pass the custom submit function
+				>
+					{({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+						<>
+							<TextInput
+								label="First Name"
+								returnKeyType="next"
+								autoCapitalize="none"
+								value={values.firstName}
+								placeholder="First Name..."
+								onChangeText={handleChange('firstName')}
+								onBlur={handleBlur('firstName')}
+								error={!!(touched.firstName && errors.firstName)}
+								errorMessage={touched.firstName && errors.firstName ? errors.firstName : undefined}
+							/>
+
+							<TextInput
+								label="Last Name"
+								returnKeyType="next"
+								autoCapitalize="none"
+								value={values.lastName}
+								placeholder="Last Name..."
+								onChangeText={handleChange('lastName')}
+								onBlur={handleBlur('lastName')}
+								error={!!(touched.lastName && errors.lastName)}
+								errorMessage={touched.lastName && errors.lastName ? errors.lastName : undefined}
+							/>
+
+							<TextInput
+								label="Username"
+								returnKeyType="next"
+								autoCapitalize="none"
+								value={values.username}
+								placeholder="Username..."
+								onChangeText={handleChange('username')}
+								onBlur={handleBlur('username')}
+								error={!!(touched.username && errors.username)}
+								errorMessage={touched.username && errors.username ? errors.username : undefined}
+							/>
+
+							<TextInput
+								label="Email"
+								returnKeyType="next"
+								autoCapitalize="none"
+								value={values.emailAddress}
+								placeholder="Email..."
+								onChangeText={handleChange('emailAddress')}
+								onBlur={handleBlur('emailAddress')}
+								error={!!(touched.emailAddress && errors.emailAddress)}
+								errorMessage={touched.emailAddress && errors.emailAddress ? errors.emailAddress : undefined}
+							/>
+
+							<TextInput
+								label="Password"
+								returnKeyType="done"
+								placeholder="Password..."
+								placeholderTextColor="#000"
+								secureTextEntry={true}
+								value={values.password}
+								onChangeText={handleChange('password')}
+								onBlur={handleBlur('password')}
+								error={!!(touched.password && errors.password)}
+								errorMessage={touched.password && errors.password ? errors.password : undefined}
+							/>
+
+							<Button mode="contained" onPress={onSignUpPress}>
+								Continue
+							</Button>
+						</>
+					)}
+				</Formik>
+
 			</Background>
 		);
 	};
