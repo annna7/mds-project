@@ -12,6 +12,8 @@ import { useUser } from '@clerk/clerk-expo';
 import userService from '../services/internal/userService';
 import { uploadProfilePicture } from '../services';
 import { IUserDetails } from '../models';
+import { useState } from 'react';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export const FurtherDetailsRegistrationScreen: React.FC = () => {
 	const { onboardingStep,
@@ -20,6 +22,7 @@ export const FurtherDetailsRegistrationScreen: React.FC = () => {
 		setProfilePictureUrl,
 		role,
 		setRole } = useUserDetails();
+	const [spinnerVisible, setSpinnerVisible] = useState(false);
 
 	const { user } = useUser();
 	const pickImageAndUpload = async () => {
@@ -27,13 +30,14 @@ export const FurtherDetailsRegistrationScreen: React.FC = () => {
 			console.error('user is not defined');
 			return;
 		}
-
+		setSpinnerVisible(true);
 		const url = await uploadProfilePicture(user.id);
 		if (url) {
 			setProfilePictureUrl(url);
 		} else {
 			console.error('Failed to upload profile picture');
 		}
+		setSpinnerVisible(false);
 	};
 
 	const submitDetails = async () => {
@@ -54,6 +58,7 @@ export const FurtherDetailsRegistrationScreen: React.FC = () => {
 
 	return (
 		<Background>
+			<Spinner visible={spinnerVisible} textContent={'Loading....'} />
 			<HeaderText color={theme.colors.primary} size={30}> Almost There! </HeaderText>
 			<HeaderText paddingBottom={10} size={20}>Pick your Role</HeaderText>
 			<SwitchSelector
