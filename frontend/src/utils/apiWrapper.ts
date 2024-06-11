@@ -1,10 +1,8 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import axios from 'axios';
-import { API_HOST, API_PORT } from '@env'; // Assuming you're using react-native-dotenv
-import { useAuth } from '@clerk/clerk-expo'; // Adjust the import based on your setup
-const apiHost = '10.0.2.2';
-
-const baseUrl = `http://${apiHost}:${API_PORT}/api`;
+import { API_PORT } from '@env';
+const API_HOST = '10.0.2.2';
+const baseUrl = `http://${API_HOST}:${API_PORT}/api`;
 
 export interface CallApiOptions {
 	method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -37,6 +35,7 @@ export async function callApi(endpoint: string, options: CallApiOptions = {}, us
 		console.log(`API call succeeded with response: ${JSON.stringify(response.data)}`);
 		return response.data;
 	} catch (error) {
+		console.error(error);
 		if (axios.isAxiosError(error)) {
 			throw new Error(error.response?.data.message || 'API call failed');
 		} else {

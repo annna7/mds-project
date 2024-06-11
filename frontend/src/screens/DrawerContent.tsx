@@ -25,7 +25,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
 	const { profilePictureUrl, role } = useUserDetails();
 	const { signOut } = useAuth();
 
-	if (!user || !profilePictureUrl || !role) {
+	if (!user || !role) {
 		return null;
 	}
 

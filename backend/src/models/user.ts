@@ -1,5 +1,4 @@
 import { Schema, type Document, model } from 'mongoose';
-import { User as ClerkUser } from '@clerk/clerk-sdk-node';
 
 interface IUser extends Document {
     clerkId: string,

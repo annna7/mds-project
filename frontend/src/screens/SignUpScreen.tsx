@@ -54,7 +54,7 @@ export default function SignUpScreen() {
 								onChangeText={handleChange('firstName')}
 								onBlur={handleBlur('firstName')}
 								error={!!(touched.firstName && errors.firstName)}
-								errorText={touched.firstName && errors.firstName ? errors.firstName : undefined}
+								errorMessage={touched.firstName && errors.firstName ? errors.firstName : undefined}
 							/>
 
 							<TextInput
@@ -66,7 +66,7 @@ export default function SignUpScreen() {
 								onChangeText={handleChange('lastName')}
 								onBlur={handleBlur('lastName')}
 								error={!!(touched.lastName && errors.lastName)}
-								errorText={touched.lastName && errors.lastName ? errors.lastName : undefined}
+								errorMessage={touched.lastName && errors.lastName ? errors.lastName : undefined}
 							/>
 
 							<TextInput
@@ -78,7 +78,7 @@ export default function SignUpScreen() {
 								onChangeText={handleChange('username')}
 								onBlur={handleBlur('username')}
 								error={!!(touched.username && errors.username)}
-								errorText={touched.username && errors.username ? errors.username : undefined}
+								errorMessage={touched.username && errors.username ? errors.username : undefined}
 							/>
 
 							<TextInput
@@ -90,7 +90,7 @@ export default function SignUpScreen() {
 								onChangeText={handleChange('emailAddress')}
 								onBlur={handleBlur('emailAddress')}
 								error={!!(touched.emailAddress && errors.emailAddress)}
-								errorText={touched.emailAddress && errors.emailAddress ? errors.emailAddress : undefined}
+								errorMessage={touched.emailAddress && errors.emailAddress ? errors.emailAddress : undefined}
 							/>
 							{alreadyUsedMail && <Text style={{ color: 'red' }}>Email already used. Please provide another email address.</Text>}
 
@@ -104,7 +104,7 @@ export default function SignUpScreen() {
 								onChangeText={handleChange('password')}
 								onBlur={handleBlur('password')}
 								error={!!(touched.password && errors.password)}
-								errorText={touched.password && errors.password ? errors.password : undefined}
+								errorMessage={touched.password && errors.password ? errors.password : undefined}
 							/>
 
 							<Button mode="contained" onPress={() => handleSubmit()}>
@@ -135,7 +135,7 @@ export default function SignUpScreen() {
 							onChangeText={handleChange('code')}
 							onBlur={handleBlur('code')}
 							error={!!(touched.code && errors.code)}
-							errorText={touched.code && errors.code ? errors.code : undefined}
+							errorMessage={touched.code && errors.code ? errors.code : undefined}
 						/>
 						<Button mode="contained" onPress={() => handleSubmit()}>
 							Verify Email

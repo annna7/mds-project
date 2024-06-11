@@ -8,9 +8,6 @@ import Logo from '../components/Logo';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { FormikHelpers } from 'formik'; // Import FormikHelpers type
-
-
 
 const signInValidationSchema = Yup.object().shape({
 	emailAddress: Yup.string().email('Invalid email').required('Email is required'),
@@ -68,7 +65,7 @@ export default function SignInScreen() {
 							onChangeText={handleChange('emailAddress')}
 							onBlur={handleBlur('emailAddress')}
 							error={!!(touched.emailAddress && errors.emailAddress)}
-							errorText={touched.emailAddress && errors.emailAddress ? errors.emailAddress : undefined}
+							errorMessage={touched.emailAddress && errors.emailAddress ? errors.emailAddress : undefined}
 						/>
 
 						<TextInput
@@ -80,7 +77,7 @@ export default function SignInScreen() {
 							onChangeText={handleChange('password')}
 							onBlur={handleBlur('password')}
 							error={!!(touched.password && errors.password)}
-							errorText={errors.password as string}
+							errorMessage={errors.password as string}
 						/>
 						{invalidPassword && <Text style={{ color: 'red' }}>Invalid email or password. Please try again.</Text>}
 

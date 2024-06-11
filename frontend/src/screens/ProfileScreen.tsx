@@ -1,28 +1,29 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { useUser } from '@clerk/clerk-expo';
 import { useUserDetails } from '../contexts/UserDetailsContext';
 import { ProfilePicture } from '../components/ProfilePicture';
 import Background from '../components/Background';
 import { EditableField } from '../components/EditableField';
 import { Card, Divider } from 'react-native-paper';
+import { HeaderText } from '../components';
+import { theme } from '../theme';
 
 export const ProfileScreen: React.FC = () => {
 	const { user } = useUser();
-	const { profilePictureUrl, setProfilePictureUrl, role } = useUserDetails();
-
-	const handleSaveProfilePictureUrl = (newUrl: string) => {
-		setProfilePictureUrl(newUrl);
-	};
+	const { profilePictureUrl, role } = useUserDetails();
 
 	if (!user) return null;
 
 	return (
 		<Background>
 			<Card style={{ ...styles.card, paddingHorizontal: 15 }}>
-				<View style={{ marginBottom: 15, alignItems: 'center' }}>
+				<View style={{ marginBottom: 7, alignItems: 'center' }}>
 					<ProfilePicture canEdit={true} source={{ uri: profilePictureUrl }} />
 				</View>
+				<HeaderText size={19}>
+					Role: <Text style={{ color: theme.colors.primary }}>{role}</Text>
+				</HeaderText>
 				<EditableField
 					isEditable={true}
 					label="First Name"

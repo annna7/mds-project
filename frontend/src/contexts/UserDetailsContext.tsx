@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { UserRoleEnum } from '../enums/UserRoleEnum';
-import { useUser } from '@clerk/clerk-expo';
+import { UserRoleEnum } from '../enums';
 
 interface UserDetails {
 	onboardingStep: number,

@@ -1,17 +1,19 @@
 import Background from '../components/Background';
-import { Divider, RadioButton } from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 import Button from '../components/Button';
 import * as React from 'react';
-import * as ImagePicker from 'expo-image-picker';
 import { useUserDetails } from '../contexts/UserDetailsContext';
-import { UserRoleEnum } from '../enums/UserRoleEnum';
+import { UserRoleEnum } from '../enums';
 import SwitchSelector from 'react-native-switch-selector';
-import { HeaderText } from '../components/HeaderText';
+import { HeaderText } from '../components';
 import { theme } from '../theme';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { useUser } from '@clerk/clerk-expo';
-import userService from '../services/internal/usersService';
+import userService from '../services/internal/userService';
 import { uploadProfilePicture } from '../services';
+import { IUserDetails } from '../models';
+import { useState } from 'react';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export const FurtherDetailsRegistrationScreen: React.FC = () => {
 	const { onboardingStep,
@@ -20,8 +22,7 @@ export const FurtherDetailsRegistrationScreen: React.FC = () => {
 		setProfilePictureUrl,
 		role,
 		setRole } = useUserDetails();
-
-	const [image, setImage] = React.useState(null);
+	const [spinnerVisible, setSpinnerVisible] = useState(false);
 
 	const { user } = useUser();
 	const pickImageAndUpload = async () => {
@@ -29,13 +30,14 @@ export const FurtherDetailsRegistrationScreen: React.FC = () => {
 			console.error('user is not defined');
 			return;
 		}
-
+		setSpinnerVisible(true);
 		const url = await uploadProfilePicture(user.id);
 		if (url) {
 			setProfilePictureUrl(url);
 		} else {
 			console.error('Failed to upload profile picture');
 		}
+		setSpinnerVisible(false);
 	};
 
 	const submitDetails = async () => {
@@ -51,13 +53,14 @@ export const FurtherDetailsRegistrationScreen: React.FC = () => {
 			role: role,
 			profilePicture: profilePictureUrl || '',
 			onboardingStep: nextOnboardingStep
-		}, user.id);
+		} as IUserDetails, user.id);
 	};
 
 	return (
 		<Background>
+			<Spinner visible={spinnerVisible} textContent={'Loading....'} />
 			<HeaderText color={theme.colors.primary} size={30}> Almost There! </HeaderText>
-			<HeaderText size={20}>Pick your Role</HeaderText>
+			<HeaderText paddingBottom={10} size={20}>Pick your Role</HeaderText>
 			<SwitchSelector
 				options={[
 					{ label: 'Regular User', value: UserRoleEnum.RegularUser },

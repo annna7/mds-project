@@ -2,17 +2,24 @@ import {User, type IUser, IUserWithClerk} from '../models';
 import {clerkClient} from '@clerk/clerk-sdk-node';
 
 class UserService {
-	public async createUser(clerkId: string, role: string, onboardingStep: number,  profilePicture?: string): Promise<IUser> {
+	public async createUser(clerkId: string, role: string, onboardingStep: number,  profilePicture?: string): Promise<IUser | undefined> {
 		try {
-			const user = new User({ clerkId, profilePicture, role, onboardingStep });
-			return await user.save();
+			const parsedRole = role === 'Landlord' ? 'landlord' : 'regularUser';
+			const user = new User({ clerkId, profilePicture, role: parsedRole, onboardingStep });
+			try {
+				return await user.save();
+			} catch (err) {
+				console.error(err);
+			}
 		} catch (error) {
 			throw new Error('Error creating user');
 		}
 	}
+
 	async getAllUsers(): Promise<IUser[]> {
 		return User.find();
 	}
+
 	async getUserByClerkId(clerkId: string): Promise<IUser | null> {
 		return User.findOne({ clerkId });
 	}

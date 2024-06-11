@@ -5,7 +5,7 @@ import { useUserDetails } from '../contexts/UserDetailsContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { uploadProfilePicture } from '../services';
 import { useUser } from '@clerk/clerk-expo';
-import userService from '../services/internal/usersService';
+import userService from '../services/internal/userService';
 
 type ProfilePictureProps = {
 	canEdit: boolean,
@@ -34,20 +34,24 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = (props) => {
 	);
 
 	if (props.canEdit) {
-		return <TouchableOpacity style={styles.container} onPress={props.canEdit ? handleEdit : undefined}>
-			{imageComponent}
-			<View style={styles.iconContainer}>
-				<MaterialCommunityIcons name="plus" size={24} color="#fff" />
-			</View>
-		</TouchableOpacity>;
+		return (
+			<TouchableOpacity style={styles.container} onPress={props.canEdit ? handleEdit : undefined}>
+				{imageComponent}
+				<View style={styles.iconContainer}>
+					<MaterialCommunityIcons name="plus" size={24} color="#fff" />
+				</View>
+			</TouchableOpacity>
+		);
 	} else {
-		return <View style={styles.container}>
-			{imageComponent}
-		</View>;
+		return (
+			<View style={styles.container}>
+				{imageComponent}
+			</View>
+		);
 	}
 };
 
-const styles = StyleSheet.create({
+const styles= StyleSheet.create({
 	container: {
 		position: 'relative',
 		height: 200,

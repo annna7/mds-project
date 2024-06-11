@@ -11,5 +11,8 @@ export const theme = {
 		text: '#1f211f',
 		dropdown: '#34312D',
 		onDrag: '#7e7f83',
+		offWhite: '#f6f6f6',
+		inverseSurface: '#174c50',
+		inversePrimary: '#c9dcde',
 	}
 };

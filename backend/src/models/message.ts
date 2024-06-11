@@ -13,12 +13,12 @@ interface IMessage extends Document {
 }
 
 const MessageSchema = new Schema<IMessage>({
-    senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    receiverId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    content: { type: String, required: true },
-    isRead: { type: Boolean, required: true },
-    referenceId: { type: Schema.Types.ObjectId, required: true },
-    type: { type: String, required: true, enum: ['listing', 'review'] }
+	senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+	receiverId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+	content: { type: String, required: true },
+	isRead: { type: Boolean, required: true },
+	referenceId: { type: Schema.Types.ObjectId, required: true },
+	type: { type: String, required: true, enum: ['listing', 'review'] }
 }, { timestamps: true });
 
 const Message = model<IMessage>('Message', MessageSchema);

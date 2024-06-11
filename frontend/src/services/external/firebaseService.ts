@@ -1,4 +1,4 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../config/firebaseConfig';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -12,7 +12,6 @@ export const uploadProfilePicture = async (clerkId: string): Promise<string> => 
 	});
 
 	if (result.canceled) {
-		console.log('user cancelled image picker');
 		return '';
 	}
 
@@ -24,11 +23,7 @@ export const uploadProfilePicture = async (clerkId: string): Promise<string> => 
 
 	try {
 		await uploadBytes(storageRef, blob);
-		console.log('Profile picture uploaded successfully');
-
-		const downloadURL = await getDownloadURL(storageRef);
-		console.log('Download URL:', downloadURL);
-		return downloadURL;
+		return await getDownloadURL(storageRef);
 	} catch (error) {
 		console.error('Error uploading profile picture:', error);
 		return '';
