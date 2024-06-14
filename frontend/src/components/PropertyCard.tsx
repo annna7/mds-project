@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Button, Card, Text } from 'react-native-paper';
 import { IListing } from '../models';
@@ -11,6 +11,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCustomFonts } from '../hooks/useCustomFonts';
 import * as Linking from 'expo-linking';
 import { Image } from 'expo-image';
+import { useUser } from '@clerk/clerk-expo';
+import { useUserDetails } from '../contexts/UserDetailsContext';
 
 type PropertyCardProps = {
 	listing: IListing,
@@ -18,12 +20,24 @@ type PropertyCardProps = {
 	mode?: string,
 	backgroundColor?: string,
 	showCarousel?: boolean,
+	isFavorite: boolean, // New prop to indicate if the listing is a favorite
 };
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ listing, canOpen, mode, backgroundColor, showCarousel = true }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({
+															  listing,
+															  canOpen,
+															  mode,
+															  backgroundColor,
+															  showCarousel = true,
+															  isFavorite,
+														  }) => {
 	useCustomFonts();
+	const { favoriteListings, setFavoriteListings } = useUserDetails();
 	const { navigate } = useNavigation();
 	const width = Dimensions.get('window').width;
+	const [pressed, setPressed] = useState(isFavorite); // State to manage pressed state of the button
+
+	const { user } = useUser();
 
 	const open = useCallback(() => {
 		if (!listing.external) {
@@ -33,30 +47,28 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ listing, canOpen, mo
 		}
 	}, [listing, navigate]);
 
-	const getOpenMessage = useCallback(() => {
-		if (!listing.external) {
-			return 'Open';
-		} else if (listing.url?.startsWith('https://www.storia')) {
-			return 'Go to Storia';
-		} else {
-			return 'Go to Olx';
-		}
-	})
+	const toggleFavorite = useCallback(async () => {
+		setPressed((prev) => !prev);
+
+		setFavoriteListings((prevFavorites) => {
+			if (prevFavorites.includes(listing._id)) {
+				// Remove listing from favorites
+				return prevFavorites.filter((id) => id !== listing._id);
+			} else {
+				// Add listing to favorites
+				return [...prevFavorites, listing._id];
+			}
+		});
+
+		// Here you can add logic to save the favorite status to a backend or global state
+	}, [listing._id, setFavoriteListings]);
 
 	return (
-		<Card mode={mode ?? 'elevated'} key={listing._id} style={[styles.cardContainer, {
-			backgroundColor: backgroundColor ?? theme.colors.background
-		}]}>
+		<Card mode={mode ?? 'elevated'} key={listing._id} style={[styles.cardContainer, { backgroundColor: backgroundColor ?? theme.colors.background }]}>
 			<View style={styles.contentContainer}>
 				<View style={styles.imageContainer}>
 					{canOpen && (
-						<Button
-							mode="elevated"
-							style={styles.openButton}
-							onPress={open}
-						>
-							{ getOpenMessage() }
-						</Button>
+						<Button mode="elevated" style={styles.openButton} onPress={open}></Button>
 					)}
 					{showCarousel ? (
 						<Carousel
@@ -81,18 +93,25 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ listing, canOpen, mo
 						/>
 					) : (
 						<Image
-							style={[styles.image, {width: width - 100}]}
+							style={[styles.image, { width: width - 100 }]}
 							source={{
 								uri: listing.photos[0],
 							}}
 							contentFit="cover"
 						/>
 					)}
+					<MaterialCommunityIcons
+						name={pressed ? 'heart' : 'heart-outline'}
+						size={30}
+						color={pressed ? 'red' : 'gray'}
+						style={styles.heartIcon}
+						onPress={toggleFavorite}
+					/>
 				</View>
-				<HeaderText paddingTop={0} paddingBottom={3} size={20}> {listing.title} - {listing.price} € </HeaderText>
-				<Text style={styles.address}>
-					{listing.address}
-				</Text>
+				<HeaderText paddingTop={0} paddingBottom={3} size={20}>
+					{listing.title} - {listing.price} €
+				</HeaderText>
+				<Text style={styles.address}>{listing.address}</Text>
 				<View style={[styles.detailRow, { marginBottom: 15 }]}>
 					<DetailBox>
 						<Text style={styles.contentText}> {listing.size} m2 </Text>
@@ -103,13 +122,23 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ listing, canOpen, mo
 					{listing.type !== PropertyTypeEnum.Studio && (
 						<DetailBox>
 							<Text style={styles.contentText}>{listing.numberOfRooms}</Text>
-							<MaterialCommunityIcons style={styles.icon} name={'bed-king-outline'} size={20} color={'white'} />
+							<MaterialCommunityIcons
+								style={styles.icon}
+								name={'bed-king-outline'}
+								size={20}
+								color={'white'}
+							/>
 						</DetailBox>
 					)}
 					{listing.type !== PropertyTypeEnum.Studio && (
 						<DetailBox>
 							<Text style={styles.contentText}>{listing.numberOfBathrooms}</Text>
-							<MaterialCommunityIcons style={styles.icon} name={'bathtub'} size={20} color={'white'} />
+							<MaterialCommunityIcons
+								style={styles.icon}
+								name={'bathtub'}
+								size={20}
+								color={'white'}
+							/>
 						</DetailBox>
 					)}
 				</View>
@@ -125,18 +154,18 @@ const styles = StyleSheet.create({
 		fontFamily: 'ProximaNova-Bold',
 	},
 	icon: {
-		marginLeft: 3
+		marginLeft: 3,
 	},
 	detailRow: {
 		display: 'flex',
 		flexDirection: 'row',
-		justifyContent: 'space-around'
+		justifyContent: 'space-around',
 	},
 	address: {
 		marginBottom: 5,
 		fontSize: 16,
 		fontFamily: 'ProximaNova-Regular',
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 	cardContainer: {
 		zIndex: 1000,
@@ -147,7 +176,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingBottom: 30
+		paddingBottom: 30,
 	},
 	imageContainer: {
 		width: '100%',
@@ -166,6 +195,13 @@ const styles = StyleSheet.create({
 		zIndex: 100,
 		position: 'absolute',
 		top: 5,
-		right: '10%'
-	}
+		right: '10%',
+	},
+	heartIcon: {
+		position: 'absolute',
+		bottom: 0,
+		right: 40,
+	},
 });
+
+export default PropertyCard;

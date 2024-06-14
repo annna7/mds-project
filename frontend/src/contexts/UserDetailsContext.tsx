@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, SetStateAction } from 'react';
 import { UserRoleEnum } from '../enums';
+import { Schema }  from 'mongoose';
 
 interface UserDetails {
 	onboardingStep: number,
@@ -8,6 +9,8 @@ interface UserDetails {
 	setProfilePictureUrl: React.Dispatch<React.SetStateAction<string>>,
 	role: UserRoleEnum,
 	setRole: React.Dispatch<React.SetStateAction<UserRoleEnum>>,
+	favoriteListings: string[],
+	setFavoriteListings: React.Dispatch<SetStateAction<string[]>>,
 }
 
 const defaultUserDetails: UserDetails = {
@@ -17,6 +20,8 @@ const defaultUserDetails: UserDetails = {
 	setProfilePictureUrl: () => {},
 	role: UserRoleEnum.RegularUser,
 	setRole: () => {},
+	favoriteListings: [],
+	setFavoriteListings: () => {},
 };
 
 const UserDetailsContext = createContext<UserDetails>(defaultUserDetails);
@@ -29,9 +34,9 @@ export const UserDetailsProvider: React.FC<UserDetailsProviderProps> = ({ childr
 	const [onboardingStep, setOnboardingStep] = useState<number>(1);
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [role, setRole] = useState<UserRoleEnum>(UserRoleEnum.RegularUser);
-
+	const [favoriteListings, setFavoriteListings] = useState<string[]>([]);
 	return (
-		<UserDetailsContext.Provider value={{ onboardingStep, setOnboardingStep, profilePictureUrl: profilePicture, setProfilePictureUrl: setProfilePicture, role, setRole }}>
+		<UserDetailsContext.Provider value={{ onboardingStep, setOnboardingStep, profilePictureUrl: profilePicture, setProfilePictureUrl: setProfilePicture, role, setRole, favoriteListings, setFavoriteListings }}>
 			{children}
 		</UserDetailsContext.Provider>
 	);

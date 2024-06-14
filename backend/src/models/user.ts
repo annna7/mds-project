@@ -7,6 +7,7 @@ interface IUser extends Document {
     onboardingStep: number,
     createdAt: Date,
     updatedAt: Date,
+    favoriteListings: string[],
 }
 
 type IUserWithClerk = IUser & {
@@ -20,7 +21,8 @@ const UserSchema = new Schema<IUser>({
 	clerkId: { type: String, required: true },
 	profilePicture: { type: String },
 	onboardingStep: { type: Number, required: true, default: 1, min: 1, max: 3},
-	role: { type: String, required: true, enum: ['regularUser', 'landlord'] }
+	role: { type: String, required: true, enum: ['regularUser', 'landlord'] },
+	favoriteListings: [{ type: String, ref: 'Listing' }],
 },
 { timestamps: true });
 
