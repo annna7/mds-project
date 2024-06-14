@@ -10,7 +10,7 @@ export type ButtonProps = {
 	children: React.ReactNode,
 } & React.ComponentProps<typeof PaperButton>;
 
-const Button = ({ mode, style, width, children, ...props }: ButtonProps) => {
+export const Button = ({ mode, style, width, children, ...props }: ButtonProps) => {
 	width = width || '100%';
 	return (
 		<PaperButton

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { useUser } from '@clerk/clerk-expo';
 import { useUserDetails } from '../contexts/UserDetailsContext';
 import { ProfilePicture } from '../components/ProfilePicture';
@@ -17,12 +17,12 @@ export const ProfileScreen: React.FC = () => {
 
 	return (
 		<Background>
-			<Card style={{ ...styles.card, paddingHorizontal: 15 }}>
+			<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
 				<View style={{ marginBottom: 7, alignItems: 'center' }}>
-					<ProfilePicture canEdit={true} source={{ uri: profilePictureUrl }} />
+					<ProfilePicture canEdit={true} source={{ uri: profilePictureUrl }}/>
 				</View>
 				<HeaderText size={19}>
-					Role: <Text style={{ color: theme.colors.primary }}>{role}</Text>
+							Role: <Text style={{ color: theme.colors.primary }}>{role}</Text>
 				</HeaderText>
 				<EditableField
 					isEditable={true}
@@ -37,30 +37,40 @@ export const ProfileScreen: React.FC = () => {
 					value={user.lastName || ''}
 					onSave={(newValue) => user.update({ lastName: newValue })}
 				/>
-				<Divider />
+				<Divider/>
 				<EditableField
 					isEditable={true}
 					label="Username"
 					value={user.username || ''}
 					onSave={(newValue) => user.update({ username: newValue })}
 				/>
-				<Divider />
+				<Divider/>
 				<EditableField
 					isEditable={false}
 					label="Email"
 					value={user.primaryEmailAddress?.emailAddress || ''}
 					onSave={(newValue) => console.log(newValue)}
 				/>
-			</Card>
+			</ScrollView>
 		</Background>
 	);
 };
 
 const styles = StyleSheet.create({
-	card: {
+	container: {
+		flex: 1,
+	},
+	scrollView: {
+		backgroundColor: 'white',
+		elevation: 20,
+		flexGrow: 1,
+		justifyContent: 'center',
 		padding: 20,
-		paddingHorizontal: 50,
+		paddingHorizontal: 15
+	},
+	card: {
 		margin: 20,
-		backgroundColor: 'white'
+		backgroundColor: 'white',
+		height: '100%',
 	},
 });

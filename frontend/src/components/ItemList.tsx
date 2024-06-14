@@ -1,7 +1,7 @@
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import React, { useCallback } from 'react';
 import { useSearchContext } from '../contexts/SearchContext';
-import PropertyCard from './PropertyCard';
+import { PropertyCard } from './PropertyCard';
 import { IListing, IReview } from '../models';
 
 export const ItemList = () => {
@@ -9,7 +9,9 @@ export const ItemList = () => {
 
 	const renderListing = useCallback(
 		(listing: IListing) => (
-			<PropertyCard listing={listing} canOpen={true}/>
+			<View style={{marginBottom: 20}}>
+				<PropertyCard key={listing._id} listing={listing} canOpen={true} showCarousel={false}/>
+			</View>
 		), []
 	);
 
@@ -20,8 +22,10 @@ export const ItemList = () => {
 	);
 
 	switch (state.searchType) {
-	case 'listings':
-		return state.listings.map(renderListing);
+	case 'listings': {
+		const reversedListings = state.listings;
+		return reversedListings.map(renderListing);
+	}
 	case 'reviews':
 		return state.reviews.map(renderReview);
 	}

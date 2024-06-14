@@ -1,21 +1,31 @@
 import { theme } from '../theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
 type MenuIconProps = {
 	iconName: string,
+	onPress: any,
 };
 
-export const MenuIcon: React.FC<MenuIconProps> = ({ iconName }) => {
+export const MenuIcon: React.FC<MenuIconProps> = ({ iconName, onPress }) => {
 	return (
-		<View style={styles.container}>
-			<View
-				style={styles.iconContainer}>
-				<Icon name={ iconName } size={25} color={'white'}/>
+		<Pressable
+			style={{
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+			onPress={onPress}
+		>
+			<View style={styles.container}>
+				<View
+					style={styles.iconContainer}>
+					<Icon name={ iconName } size={25} color={'white'}/>
+				</View>
 			</View>
-		</View>
+		</Pressable>
 	);
 };
 

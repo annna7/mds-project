@@ -14,7 +14,7 @@ export const useListing = (listingId: string, userId: string) => {
 			.catch(err => {
 				setError(err);
 			});
-	}, []);
+	}, [listingId, userId]);
 
 	return { listing, error };
 };

@@ -8,18 +8,19 @@ const seedUsers = async () => {
 };
 
 const seedListings = async () => {
-	await Listing.deleteMany({});
-	for (const listing of LISTINGS) {
-		await listing.save();
+	const listingsNum = await Listing.countDocuments();
+	if (!listingsNum) {
+		for (const listing of LISTINGS) {
+			await listing.save();
+		}
 	}
 };
 
 export const seedDatabase = async () => {
 	try {
-		// await seedUsers();
 		await seedListings();
 		console.log('Database seeding successful');
 	} catch (error) {
-		console.error('Database seeding failed');
+		console.error(`Database seeding failed ${error}`);
 	}
 };

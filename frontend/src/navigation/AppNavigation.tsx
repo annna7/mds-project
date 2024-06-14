@@ -14,6 +14,7 @@ import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import { useUserDetails } from '../contexts/UserDetailsContext';
 import { SearchProvider } from '../contexts/SearchContext';
+import { FiltersScreen } from '../screens';
 
 export type RootStackParamList = {
 	Home: undefined,
@@ -24,6 +25,7 @@ export type RootStackParamList = {
 	Favorites: undefined,
 	Profile: undefined,
 	Listing: { id: string },
+	Filters: undefined,
 };
 
 export const AppNavigation = () => {
@@ -52,6 +54,7 @@ export const AppNavigation = () => {
 					<Drawer.Screen name="Favorites" component={FavoritesScreen} />
 					<Drawer.Screen name="Profile" component={ProfileScreen} />
 					<Drawer.Screen name="Listing" component={ListingScreen}/>
+					<Drawer.Screen name="Filters" component={FiltersScreen}/>
 				</Drawer.Navigator>
 			</NavigationContainer>
 		</SearchProvider>

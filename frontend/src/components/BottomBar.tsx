@@ -4,36 +4,58 @@ import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { ItemList } from './ItemList';
 import { useSearchContext } from '../contexts/SearchContext';
 import { useCustomFonts } from '../hooks/useCustomFonts';
+import { useNavigation } from '@react-navigation/native';
+import { useUserDetails } from '../contexts/UserDetailsContext';
+import { ActivityIndicator } from 'react-native-paper';
 
 export const BottomBar = () => {
-	const customFont = useCustomFonts();
+	useCustomFonts();
 	const { state } = useSearchContext();
 	const bottomSheetRef = useRef<BottomSheet>(null);
 
 	return (
-		<BottomSheet
-			index={0}
-			ref={bottomSheetRef}
-			snapPoints={[75, '100%']}
-		>
-			<BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					<Text style={{
-						fontWeight: 'bold',
-						fontSize: 18,
-					}}> {state.searchType === 'listings' ? state.listings.length : state.reviews.length} results </Text>
-					<View style={ { height: 50 }} ></View>
-				</View>
-				<ItemList/>
-			</BottomSheetScrollView>
-		</BottomSheet>
+		<View style={styles.container}>
+			<BottomSheet
+				index={0}
+				ref={bottomSheetRef}
+				snapPoints={[75, '100%']}
+				enableContentPanningGesture={!state.isWaitingForSearch}
+			>
+				{state.isWaitingForSearch ? (
+					<ActivityIndicator size="small" color={'grey'}/>
+				) : (
+					<BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+							<Text style={styles.resultsText}>
+								{state.searchType === 'listings' ? state.listings.length : state.reviews.length} results
+							</Text>
+							<View style={{ height: 50 }}></View>
+						</View>
+						<ItemList />
+					</BottomSheetScrollView>
+				)}
+			</BottomSheet>
+		 </View>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
+	resultsText: {
+		fontWeight: 'bold',
+		fontSize: 18,
 	},
-	contentContainer: {}
+	container: {
+		display: 'flex',
+		flex: 1,
+		justifyContent: 'flex-end',
+	},
+	contentContainer: {
+	},
+	newListingButton: {
+		marginBottom: 80,
+		marginRight: 10, // TODO: Fix hardcoding?
+		width: 110,
+		alignSelf:'flex-end',
+	}
 });
 

@@ -1,24 +1,14 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import {
-	DrawerContentComponentProps,
-	DrawerContentScrollView,
-	DrawerItem,
-} from '@react-navigation/drawer';
-import {
-	useTheme,
-	Avatar,
-	Title,
-	Caption,
-	Drawer,
-	Text,
-} from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, } from '@react-navigation/drawer';
+import { Caption, Drawer, Title, } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { useAuth, useUser } from '@clerk/clerk-expo';
 import { useUserDetails } from '../contexts/UserDetailsContext';
-import { capitalize } from '../utils/stringUtils';
+import { capitalize } from '../utils';
 import Button from '../components/Button';
+import { UserRoleEnum } from '../enums';
 
 export function DrawerContent(props: DrawerContentComponentProps) {
 	const { user } = useUser();
@@ -47,16 +37,16 @@ export function DrawerContent(props: DrawerContentComponentProps) {
 						label="Profile"
 						onPress={() => { props.navigation.navigate('Profile'); }}
 					/>
-					{ role === 'landlord' &&
+					{ role === UserRoleEnum.Landlord &&
 						<DrawerItem
 							icon={({ color, size }) => (
 								<MaterialCommunityIcons name="map-marker-outline" color={color} size={size} />
 							)}
 							label="Add Property"
-							onPress={() => { props.navigation.navigate('CreateProperty'); }}
+							onPress={() => { props.navigation.navigate('CreateListing'); }}
 						/>
 					}
-					{ role === 'regularUser' &&
+					{ role === UserRoleEnum.RegularUser &&
 						<DrawerItem
 							icon={({ color, size }) => (
 								<MaterialCommunityIcons name="home-outline" color={color} size={size} />

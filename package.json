@@ -9,6 +9,11 @@
     "clear-ports:windows": "@echo off \n for /f \"tokens=5\" %%a in ('netstat -aon ^| findstr :3000') do taskkill /F /PID %%a \n for /f \"tokens=5\" %%a in ('netstat -aon ^| findstr :8000') do taskkill /F /PID %%a"
   },
   "dependencies": {
-    "@gorhom/bottom-sheet": "^4.6.3"
+    "@gorhom/bottom-sheet": "^4",
+    "@react-native-community/slider": "^4.5.2",
+    "@react-native-community/toolbar-android": "^0.2.1",
+    "react-native-gesture-handler": "^2.16.2",
+    "react-native-reanimated": "^3.11.0",
+    "react-native-reanimated-carousel": "^3.5.1"
   }
 }

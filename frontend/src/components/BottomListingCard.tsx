@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
-import PropertyCard from './PropertyCard';
+import { PropertyCard } from './PropertyCard';
 
 export const BottomListingCard: React.FC<any> = ({ item, onClose }) => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -17,7 +17,7 @@ export const BottomListingCard: React.FC<any> = ({ item, onClose }) => {
 			ref={bottomSheetRef}
 			onClose={handleClosePress}
 			enablePanDownToClose={true}
-			snapPoints={[300]}
+			snapPoints={[400]}
 			index={isOpen ? 0 : -1}
 		>
 			<PropertyCard mode={'contained'} backgroundColor={'white'} canOpen={true} listing={item} />

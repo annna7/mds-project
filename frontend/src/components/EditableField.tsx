@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
-import Button  from '../components/Button';
+import Button from '../components/Button';
 import { HeaderText } from './HeaderText';
 
 type EditableFieldProps = {
@@ -14,6 +14,18 @@ type EditableFieldProps = {
 export const EditableField: React.FC<EditableFieldProps> = ({ label, value, onSave, isEditable }) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [editValue, setEditValue] = useState(value);
+	const textInputRef = useRef<TextInput>(null);
+
+	const handleBlur = () => {
+		onSave(editValue);
+		setIsEditing(false);
+	};
+
+	const handleSave = () => {
+		if (textInputRef.current) {
+			textInputRef.current.blur();
+		}
+	};
 
 	return (
 		<View style={styles.fieldContainerColumn}>
@@ -22,19 +34,19 @@ export const EditableField: React.FC<EditableFieldProps> = ({ label, value, onSa
 				{isEditing ? (
 					<View style={{ width: '70%' }}>
 						<TextInput
+							ref={textInputRef}
 							style={{ ...styles.input, width: '100%' }}
 							value={editValue}
 							onChangeText={setEditValue}
+							onBlur={handleBlur}
+							autoFocus={true}
 						/>
 					</View>
 				) : (
 					<Text style={styles.value}>{value}</Text>
 				)}
 				{isEditing ? (
-					<Button mode="elevated" width={'fit-content'} style={{ marginLeft: 10 }} onPress={() => {
-						onSave(editValue);
-						setIsEditing(false);
-					}}>Save</Button>
+					<Button mode="elevated" width={'fit-content'} style={{ marginLeft: 10 }} onPress={handleSave}>Save</Button>
 				) : (
 					<Button mode="elevated" disabled={!isEditable} width={80} onPress={() => setIsEditing(true)}>Edit</Button>
 				)}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, TextProps, View, ColorValue } from 'react-native';
+import { Text, StyleSheet, TextProps, ColorValue } from 'react-native';
 import { theme } from '../theme';
 import { useCustomFonts } from '../hooks/useCustomFonts';
 import { ActivityIndicator } from 'react-native-paper';
@@ -15,18 +15,26 @@ type HeaderTextProps = {
 	marginTop?: number,
 } & TextProps;
 
-export const HeaderText = ({ children, color, size, paddingBottom, paddingTop, textAlign, ...props }: HeaderTextProps) => {
+export const HeaderText = ({ children, color, size, paddingBottom, paddingTop, textAlign, marginTop, ...props }: HeaderTextProps) => {
 	const customFonts = useCustomFonts();
 	if (!customFonts) {
 		return <ActivityIndicator size="large"/>;
 	}
 
 	color = color || theme.colors.text;
-	paddingTop = paddingTop || 20;
+	paddingTop = paddingTop ? paddingTop : 15;
 	textAlign = textAlign || 'center';
 
+
 	return (
-		<Text {...props} style={[styles.headerText, { textAlign: textAlign, paddingTop: paddingTop, color: color, fontSize: size, paddingBottom: paddingBottom, fontFamily: 'ProximaNova-Bold' }]}>
+		<Text {...props} style={[styles.headerText, {
+			textAlign: textAlign,
+			paddingTop: paddingTop,
+			color: color,
+			fontSize: size,
+			paddingBottom: paddingBottom,
+			fontFamily: 'ProximaNova-Bold'
+		}]}>
 			{children}
 		</Text>
 	);
@@ -35,7 +43,6 @@ export const HeaderText = ({ children, color, size, paddingBottom, paddingTop, t
 const styles = StyleSheet.create({
 	headerText: {
 		fontSize: 20,
-		lineHeight: 28,
 		paddingHorizontal: 5,
 	},
 });

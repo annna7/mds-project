@@ -3,9 +3,9 @@ import { View, StyleSheet, Text } from 'react-native';
 import { TextInput as Input } from 'react-native-paper';
 import { theme } from '../theme';
 
-type Props = React.ComponentProps<typeof Input> & { errorMessage?: string };
+type Props = React.ComponentProps<typeof Input> & { errorText?: string };
 
-export const TextInput = ({ errorMessage, ...props }: Props) => (
+export const TextInput = ({ errorText, ...props }: Props) => (
 	<View style={styles.container}>
 		<Input
 			style={styles.input}
@@ -14,7 +14,7 @@ export const TextInput = ({ errorMessage, ...props }: Props) => (
 			mode="outlined"
 			{...props}
 		/>
-		{errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+		{errorText ? <Text style={styles.error}>{errorText}</Text> : null}
 	</View>
 );
 

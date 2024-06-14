@@ -1,16 +1,16 @@
 import { Text, TextProps, View } from 'react-native';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { theme } from '../theme';
 
 
 type DetailBoxProps = {
-	content: string,
+	children: ReactNode,
 };
 
-export const DetailBox: React.FC<DetailBoxProps> = ({ content }) => {
+export const DetailBox: React.FC<DetailBoxProps> = ({ children }) => {
 	return (
 		<View style={styles.detailBox}>
-			<Text style={styles.detailText}>{ content }</Text>
+			<View style={styles.flexContent}>{ children }</View>
 		</View>
 	);
 };
@@ -25,12 +25,9 @@ const styles = {
 		shadowOffset: { width: 10, height: 10 },
 		shadowOpacity: 0.5,
 		marginHorizontal: 10,
-		marginBottom: 100
 	},
-	detailText: {
-		textAlign: 'center',
-		fontWeight: '200',
-		color: 'white',
-		fontSize: 16
+	flexContent: {
+		display: 'flex',
+		flexDirection: 'row',
 	}
 };
