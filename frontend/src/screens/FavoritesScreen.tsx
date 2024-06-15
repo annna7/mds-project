@@ -6,7 +6,7 @@ import styles from 'react-native-loading-spinner-overlay/lib/style';
 import { useUserDetails } from '../contexts/UserDetailsContext';
 import { BottomListingCard } from '../components';
 import { listingService } from '../services';
-import {useUser} from "@clerk/clerk-expo";
+import { useUser } from '@clerk/clerk-expo';
 
 const landlordId = '663cb48ee88f928f9cb35f69';
 
@@ -38,26 +38,27 @@ const exampleListings = [{
 
 export const FavoritesScreen: React.FC = () => {
 	const { favoriteListings } = useUserDetails();
-	const {user} = useUser();
+	const { user } = useUser();
 	const [listings, setListings] = useState<any[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 
-	useEffect(() => {
-		const fetchListings = async () => {
-			const fetchedListings = await Promise.all(favoriteListings.map(id => listingService.getListing(id, user?.id)));
-			setListings(fetchedListings.filter(listing => listing !== null));
-			setLoading(false);
-		};
+	if(listings)
+		useEffect(() => {
+			const fetchListings = async () => {
+				const fetchedListings = await Promise.all(favoriteListings.map(id => listingService.getListing(id, user?.id)));
+				setListings(fetchedListings.filter(listing => listing !== null));
+				setLoading(false);
+			};
 
-		fetchListings();
-	}, [favoriteListings]);
+			fetchListings();
+		}, [favoriteListings]);
 	return (
 		<ScrollView style={styles.container}>
 			{listings.map((listing) => (
 				<PropertyCard
 					key={listing._id} // Ensure each component in a list has a unique key prop
 					listing={listing}
-					isFavorite={true}
+					isFavorite={favoriteListings.includes(listing._id)}
 					canOpen={true} // Example: You can adjust this based on your requirements
 					mode="contained" // Example: You can adjust this based on your requirements
 					backgroundColor="white" // Example: You can adjust this based on your requirements

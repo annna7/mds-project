@@ -13,6 +13,8 @@ import * as Linking from 'expo-linking';
 import { Image } from 'expo-image';
 import { useUser } from '@clerk/clerk-expo';
 import { useUserDetails } from '../contexts/UserDetailsContext';
+import { includes } from 'lodash';
+import userService from '../services/internal/userService';
 
 type PropertyCardProps = {
 	listing: IListing,
@@ -23,8 +25,7 @@ type PropertyCardProps = {
 	isFavorite: boolean, // New prop to indicate if the listing is a favorite
 };
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({
-															  listing,
+export const PropertyCard: React.FC<PropertyCardProps> = ({ listing,
 															  canOpen,
 															  mode,
 															  backgroundColor,
@@ -32,13 +33,22 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 															  isFavorite,
 														  }) => {
 	useCustomFonts();
+
 	const { favoriteListings, setFavoriteListings } = useUserDetails();
+	if(listing._id in favoriteListings)
+	{
+		isFavorite = true;
+	}
+	else
+	{
+		isFavorite = false;
+	}
 	const { navigate } = useNavigation();
 	const width = Dimensions.get('window').width;
 	const [pressed, setPressed] = useState(isFavorite); // State to manage pressed state of the button
 
 	const { user } = useUser();
-
+	console.error(useUserDetails().favoriteListings);
 	const open = useCallback(() => {
 		if (!listing.external) {
 			navigate('Listing', { id: listing._id });
@@ -47,17 +57,37 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 		}
 	}, [listing, navigate]);
 
+	const updateFavoriteListings = async (updatedFavorites: string[]) => {
+		try {
+			await userService.updateUser(user?.id ?? '', { favoriteListings: updatedFavorites });
+			useUserDetails().favoriteListings = updatedFavorites;
+		} catch (error) {
+			console.error('Failed to update favorite listings:', error);
+			// Handle error state or retry logic if needed
+		}
+	};
+
 	const toggleFavorite = useCallback(async () => {
 		setPressed((prev) => !prev);
-
+		isFavorite = !isFavorite;
+		const id_ = user?.id;
 		setFavoriteListings((prevFavorites) => {
 			if (prevFavorites.includes(listing._id)) {
-				// Remove listing from favorites
-				return prevFavorites.filter((id) => id !== listing._id);
+				const list = prevFavorites.filter(id => id !== listing._id);
+				if(user?.id) {
+					updateFavoriteListings(list);
+					console.error(list);
+				}
+				return list;
 			} else {
-				// Add listing to favorites
-				return [...prevFavorites, listing._id];
+				const list = [...prevFavorites, listing._id];
+				if(user?.id) {
+					updateFavoriteListings(list);
+					console.error(list);
+				}
+				return list;
 			}
+
 		});
 
 		// Here you can add logic to save the favorite status to a backend or global state
@@ -101,9 +131,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 						/>
 					)}
 					<MaterialCommunityIcons
-						name={pressed ? 'heart' : 'heart-outline'}
+						name={(favoriteListings.includes(listing._id)) ? 'heart' : 'heart-outline'}
 						size={30}
-						color={pressed ? 'red' : 'gray'}
+						color={(favoriteListings.includes(listing._id)) ? 'red' : 'gray'}
 						style={styles.heartIcon}
 						onPress={toggleFavorite}
 					/>

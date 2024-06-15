@@ -10,6 +10,7 @@ export interface IUser {
 	onboardingStep: number,
 	createdAt?: Date,
 	updatedAt?: Date,
+	favoriteListings: string[],
 }
 
 export interface IUserWithClerk extends IUser {
