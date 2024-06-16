@@ -15,7 +15,6 @@ export const EditableField: React.FC<EditableFieldProps> = ({ label, value, onSa
 	const [isEditing, setIsEditing] = useState(false);
 	const [editValue, setEditValue] = useState(value);
 	const textInputRef = useRef<TextInput>(null);
-
 	const handleBlur = () => {
 		onSave(editValue);
 		setIsEditing(false);

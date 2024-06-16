@@ -21,7 +21,7 @@ const  LandlordDetails: React.FC<any> = ({ landlordID }) => {
 		</Card>
 	);
 };
-//TODO: add on press for button
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,

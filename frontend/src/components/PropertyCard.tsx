@@ -23,7 +23,7 @@ type PropertyCardProps = {
 	mode?: string,
 	backgroundColor?: string,
 	showCarousel?: boolean,
-	showFavorite: boolean
+	showFavorite: boolean,
 };
 
 
@@ -62,16 +62,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ listing,
 	}, [listing, navigate]);
 
 	const updateFavoriteListings = async (updatedFavorites: string[]) => {
-		try {
-			await userService.updateUser(user?.id ?? '', { favoriteListings: updatedFavorites });
-			// useUserDetails().favoriteListings = updatedFavorites;
-		} catch (error) {
-			console.error('Failed to update favorite listings:', error);
-		}
+		await userService.updateUser(user?.id ?? '', { favoriteListings: updatedFavorites });
 	};
 
 	if (!user?.id) {
-		return <Spinner></Spinner>
+		return <Spinner></Spinner>;
 	}
 
 	const toggleFavorite = useCallback(async () => {

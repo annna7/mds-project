@@ -25,12 +25,6 @@ const verificationCodeValidationSchema = Yup.object().shape({
 export default function SignUpScreen() {
 	const { isLoaded, signUp, setActive } = useSignUp();
 	const [spinnerVisible, setSpinnerVisible] = useState(false);
-	const [firstName, setFirstName] = React.useState('');
-	const [lastName, setLastName] = React.useState('');
-	const [username, setUsername] = React.useState('');
-	const [emailAddress, setEmailAddress] = React.useState('');
-	const [password, setPassword] = React.useState('');
-	const [code, setCode] = React.useState('');
 	const [isPending, setIsPending] = React.useState(false);
 	const [alreadyUsedMail, setAlreaduUsedMail] = useState(false);
 	const renderFirstRegistrationStep = () => {

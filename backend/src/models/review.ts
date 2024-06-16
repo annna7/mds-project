@@ -7,8 +7,8 @@ interface IReview extends Document {
     content: string,
 	location: ILocation,
 	address: IAddress,
-    areaFeedback: object, // TODO: define questions for area feedback
-    buildingFeedback: object, // TODO: define questions for building feedback
+    areaFeedback: object,
+    buildingFeedback: object,
     tags: [string],
     createdAt: Date,
     updatedAt: Date,

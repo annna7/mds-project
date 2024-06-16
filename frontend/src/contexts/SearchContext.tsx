@@ -52,7 +52,7 @@ const SearchContext = createContext<{
 	setFilters: React.Dispatch<React.SetStateAction<SearchContextState['filters']>>,
 	setIsWaitingForSearch: React.Dispatch<React.SetStateAction<boolean>>,
 	setWasExternalSearchPerformed: React.Dispatch<React.SetStateAction<boolean>>,
-}>(null!);
+		}>(null!);
 
 export const useSearchContext = () => useContext(SearchContext);
 
@@ -115,7 +115,7 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 			if (wasExternal) {
 				setWasExternalSearchPerformed(true);
 			}
-		})
+		});
 	}, [fetchFilteredData]);
 
 	const contextValue = useMemo(() => ({

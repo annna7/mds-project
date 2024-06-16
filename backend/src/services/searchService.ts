@@ -64,27 +64,15 @@ export const SearchService = {
 		const geoQuery = getGeospatialQuery(searchParams);
 		const filterQuery = getFilterQuery(searchParams.filters);
 		const combinedQuery = { ...geoQuery, ...filterQuery };
-		console.error('combined', combinedQuery);
-
-		try {
-			const restrictedListings = await Listing.find(combinedQuery);
-			const restrictedReviews = await Review.find(combinedQuery);
-			const justFilteredListings = await Listing.find(filterQuery);
-			const justFilteredReviews = await Review.find(filterQuery);
-
-			console.log('region', searchParams.region);
-			console.log('restrictedListings', restrictedListings.length);
-			console.log('justFilteredListings', justFilteredListings.length);
-
-			return {
-				listings: restrictedListings,
-				reviews: restrictedReviews,
-				filteredListings: justFilteredListings,
-				filteredReviews: justFilteredReviews
-			};
-		} catch (error) {
-			console.error('Error fetching data:', error);
-			throw error;
-		}
+		const restrictedListings = await Listing.find(combinedQuery);
+		const restrictedReviews = await Review.find(combinedQuery);
+		const justFilteredListings = await Listing.find(filterQuery);
+		const justFilteredReviews = await Review.find(filterQuery);
+		return {
+			listings: restrictedListings,
+			reviews: restrictedReviews,
+			filteredListings: justFilteredListings,
+			filteredReviews: justFilteredReviews
+		};
 	}
 };

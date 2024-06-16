@@ -9,7 +9,7 @@ export const ItemList = () => {
 
 	const renderListing = useCallback(
 		(listing: IListing) => (
-			<View style={{marginBottom: 20}}>
+			<View style={{ marginBottom: 20 }}>
 				<PropertyCard showFavorite={true} key={listing._id} listing={listing} canOpen={true} showCarousel={false}/>
 			</View>
 		), []

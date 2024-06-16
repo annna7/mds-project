@@ -2,6 +2,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import mongoose from 'mongoose';
 import { User } from '../../src/models';
+import {USERS} from "../../src/database";
 
 const { expect } = chai;
 
@@ -18,19 +19,9 @@ describe('User Model', () => {
 		userMock.restore();
 	});
 
-	const REGULAR_USER = {
-		clerkId: 'clerk|regularuser123',
-		profilePicture: 'https://example.com/path/to/regularuser/profilepic.jpg',
-		role: 'regularUser',
-		onboardingStep: 1,
-	};
+	const REGULAR_USER = USERS[0];
 
-	const LANDLORD_USER = {
-		clerkId: 'clerk|landlorduser123',
-		profilePicture: 'https://example.com/path/to/landlord/profilepic.jpg',
-		role: 'landlord',
-		onboardingStep: 1,
-	};
+	const LANDLORD_USER = USERS[1];
 
 	it('should create a new regular user', async () => {
 		userMock.expects('create').withArgs(REGULAR_USER).resolves(REGULAR_USER);

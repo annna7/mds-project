@@ -6,11 +6,8 @@ class UserService {
 		try {
 			const parsedRole = role === 'Landlord' ? 'landlord' : 'regularUser';
 			const user = new User({ clerkId, profilePicture, role: parsedRole, onboardingStep });
-			try {
-				return await user.save();
-			} catch (err) {
-				console.error(err);
-			}
+			return await user.save();
+
 		} catch (error) {
 			throw new Error('Error creating user');
 		}
@@ -43,7 +40,6 @@ class UserService {
 	}
 
 	async updateUserByClerkId(clerkId: string, update: Partial<IUser>): Promise<IUser | null> {
-		console.log('updates in backend', update);
 		return User.findOneAndUpdate({ clerkId }, update, { new: true });
 	}
 

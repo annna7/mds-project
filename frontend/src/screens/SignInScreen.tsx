@@ -8,7 +8,6 @@ import Logo from '../components/Logo';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { FormikHelpers } from 'formik';
 
 
 
@@ -26,16 +25,13 @@ export default function SignInScreen() {
 		if (!isLoaded) return;
 
 		try {
-			setSpinnerVisible(true); // Start the spinner when sign-in process starts
-
+			setSpinnerVisible(true);
 			const completeSignIn = await signIn.create({
 				identifier: values.emailAddress,
 				password: values.password,
 			});
 
 			await setActive({ session: completeSignIn.createdSessionId });
-
-			// Stop the spinner when sign-in process is complete
 			setSpinnerVisible(false);
 		} catch (err) {
 			setInvalidPassword(true);

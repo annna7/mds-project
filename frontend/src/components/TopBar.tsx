@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
 		marginLeft: '7%',
 		marginRight: '7%'
 	},
-	/* TODO: maybe fix hardcoded? */
 	menuContainer: {
 		position: 'absolute',
 		marginLeft: '3%',

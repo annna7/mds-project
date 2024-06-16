@@ -8,38 +8,27 @@ import { useCustomFonts } from '../hooks/useCustomFonts';
 import { theme } from '../theme';
 import RentalAmenitiesEnum from '../enums/RentalAmenitiesEnum';
 import { MAX_PRICE, MIN_PRICE } from '../utils';
-import { AddressSchema, LocationSchema, type IAddress, type ILocation, type IUser } from '../../../backend/src/models/';
+import { type IAddress, type ILocation } from '../../../backend/src/models/';
 import { IListing } from '../models';
-import SwitchSelector from 'react-native-switch-selector';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import Background from '../components/Background';
 
 
 export const CreateListingScreen = () => {
 	useCustomFonts();
-	const [listing, setListing] = useState<IListing>();
-
 	const [title, setTitle] = React.useState('');
-	const [description, setDescription] = React.useState('');
-	const [address, setAddress] = React.useState<IAddress>();
 	const [country, setCountry] = React.useState('');
 	const [stateOrProvince, setStateOrProvince] = React.useState('');
 	const [city, setCity] = React.useState('');
 	const [postalCode, setPostalCode] = React.useState('');
 	const [streetNumber, setStreetNumber] = React.useState('');
 	const [streetName, setStreetName] = React.useState('');
-	const [location, setLocation] = React.useState<ILocation>();
 	const [type, setType] = React.useState('');
 	const [price, setPrice] = React.useState(1000);
 	const [numberOfBedrooms, setNumberOfBedrooms] = React.useState(0);
 	const [numberOfBathrooms, setNumberOfBathrooms] = React.useState(0);
 	const [size, setSize] = React.useState('');
 	const [amenities, setAmenities] = React.useState(['']);
-	const [createdAt, setCreateAt] = React.useState(new Date());
-	const [updatedAt, setUpdatedAt] = React.useState(new Date());
-
 	const amenitiesArray = Object.entries(RentalAmenitiesEnum);
-
 
 	const handleSelectAmenity = (amenity) => {
 		const updatedAmenities = amenities.includes(amenity)
@@ -144,7 +133,7 @@ export const CreateListingScreen = () => {
 							value={numberOfBedrooms}
 							onPress={number => setNumberOfBedrooms(number)}
 						/>
-					 {/*In unele parti e number of rooms in altele number of Bedrooms*/}
+						{}
 						<HeaderText paddingBottom={5} textAlign={'left'} size={17}>Number of Bathrooms:</HeaderText>
 						<CustomSwitchSelector
 							options={[

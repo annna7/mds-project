@@ -18,7 +18,6 @@ export const FiltersScreen = ({ navigation }) => {
 	const { state, setFilters, triggerSearch } = useSearchContext();
 	const { filters } = state;
 	const amenitiesArray = Object.entries(RentalAmenitiesEnum);
-
 	const priceRangeRef = useRef([filters.priceRange.min, filters.priceRange.max]);
 	const roomTypeRef = useRef(filters.roomType);
 	const bedroomsRef = useRef(filters.bedrooms);

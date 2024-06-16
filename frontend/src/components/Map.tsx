@@ -1,10 +1,7 @@
 import MapView from 'react-native-map-clustering';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-	BUCHAREST_COORDINATES,
-	DEFAULT_LATITUDE_DELTA,
-	DEFAULT_LONGITUDE_DELTA,
 	getCoordinatesFromLocation,
 	mapStyles
 } from '../utils';
@@ -69,15 +66,6 @@ export const Map: React.FC = () => {
 			setLegalToUpdate(false);
 		}
 	}, [state.wasExternalSearchPerformed]);
-
-	//
-	// useEffect(() => {
-	// 	if (mapRef.current && state.wasExternalSearchPerformed) {
-	// 		console.log('was external map');
-	// 		mapRef.current.animateToRegion(state.region, 1000);
-	// 		setWasExternalSearchPerformed(false);
-	// 	}
-	// }, [state.wasExternalSearchPerformed]);
 
 	return (
 		<View style={styles.map}>
