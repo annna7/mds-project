@@ -3,14 +3,15 @@ import {ScrollView, Text, Pressable, View, StyleSheet} from 'react-native';
 import {theme} from "../theme";
 import { Ionicons } from '@expo/vector-icons';
 import {listingService, messageService} from "../services";
-import {IListing} from "../models";
-import {PropertyCard} from "./PropertyCard";
 import {io} from "socket.io-client";
+import {useNavigation} from "@react-navigation/native";
+import {API_HOST} from "@env";
 
-const ENDPOINT = "http://192.168.191.187:3000"; // TODO fix hardcoding
+const ENDPOINT = `http://${API_HOST}:${API_HOST}`;
 let socket;
 
 const RenderMessages = ({ initialMessages, userId }) => {
+    const {navigate} = useNavigation();
     const [messages, setMessages] = useState(initialMessages);
     const [listings, setListings] = useState({});
     const scrollViewRef = useRef();
@@ -116,9 +117,6 @@ const RenderMessages = ({ initialMessages, userId }) => {
                                     {listings[msg.referenceId] ? truncateText(listings[msg.referenceId].description, 100) : ''}
                                 </Text>
                             </View>
-                            <Pressable style={styles.openButton}>
-                                <Text style={styles.openButtonText}>Open</Text>
-                            </Pressable>
                         </View>
                     )}
                     <Pressable

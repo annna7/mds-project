@@ -1,11 +1,9 @@
 import {Request, Response} from "express";
-import {ReviewService} from "../services";
 import {MessageService} from "../services/messageService";
 
 
 export const MessageController = {
     async uploadMessage(req: Request, res: Response) {
-        console.log("In messageController");
         try {
             const message = await MessageService.uploadMessage(req.body);
             res.status(201).json(message);

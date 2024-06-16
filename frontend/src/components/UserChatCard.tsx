@@ -6,8 +6,9 @@ import {useNavigation} from "@react-navigation/native";
 import {messageService} from "../services";
 import {useUserDetails} from "../contexts/UserDetailsContext";
 import {io} from "socket.io-client";
+import {API_HOST} from "@env";
 
-const ENDPOINT = "http://192.168.191.187:3000"; // TODO fix hardcoding
+const ENDPOINT = `http://${API_HOST}:${API_HOST}`;
 let socket;
 
 const UserChatCard: React.FC<any> = ({ userId: receiverId, index }) => {

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View, StyleSheet, KeyboardAvoidingView, ScrollView, Dimensions, Pressable} from 'react-native';
 import Background from "../components/Background";
+import { API_PORT, API_HOST, AUTH0_DOMAIN, AUTH0_CLIENT_ID, GOOGLE_MAPS_API_KEY } from '@env';
 import {Entypo, Feather} from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import {TextInput} from "react-native-paper";
@@ -13,14 +14,13 @@ import {RootStackParamList} from "../navigation/AppNavigation";
 import {useUserData} from "../hooks/useUserData";
 import {Image} from "expo-image";
 import {useCustomFonts} from "../hooks/useCustomFonts";
-import {white} from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 import userService from "../services/internal/userService";
 import RenderMessages from "../components/renderMessages";
 import {io} from "socket.io-client";
 import {update} from "lodash";
 
 type ChatMessagesScreenRouteProps = RouteProp<RootStackParamList, 'Message'>;
-const ENDPOINT = "http://192.168.191.187:3000"; // TODO fix hardcoding
+const ENDPOINT = `http://${API_HOST}:${API_HOST}`;
 let socket;
 
 export const ChatMessagesScreen: React.FC = () => {
