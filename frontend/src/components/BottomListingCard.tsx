@@ -20,7 +20,7 @@ export const BottomListingCard: React.FC<any> = ({ item, onClose }) => {
 			snapPoints={[400]}
 			index={isOpen ? 0 : -1}
 		>
-			<PropertyCard mode={'contained'} backgroundColor={'white'} canOpen={true} listing={item} />
+			<PropertyCard showFavorite={true} mode={'contained'} backgroundColor={'white'} canOpen={true} listing={item} />
 		</BottomSheet>
 	);
 };

@@ -43,6 +43,7 @@ class UserService {
 	}
 
 	async updateUserByClerkId(clerkId: string, update: Partial<IUser>): Promise<IUser | null> {
+		console.log('updates in backend', update);
 		return User.findOneAndUpdate({ clerkId }, update, { new: true });
 	}
 

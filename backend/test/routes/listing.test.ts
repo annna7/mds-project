@@ -1,16 +1,12 @@
-
-import chaiHttp from 'chai-http';
-import { config } from '../../src/configure';
-
-const photos = ['https://firebasestorage.googleapis.com/v0/b/one-roof-bb7ce.appspot.com/o/apart1.jpeg?alt=media&token=ef9567f0-aa4f-4370-a207-7afc1c22f022',
-	'https://firebasestorage.googleapis.com/v0/b/one-roof-bb7ce.appspot.com/o/apart2.jpeg?alt=media&token=b08cc3a8-f2b9-4a75-a8f6-4fa4ee7467c4'];
-
 import chai from 'chai';
 import sinon from 'sinon';
 import mongoose from 'mongoose';
 const { expect } = chai;
 const landlordId = '663cb48ee88f928f9cb35f69';
-import {Listing} from '../src/models/listing';
+import {Listing} from '../../src/models';
+
+const photos = ['https://firebasestorage.googleapis.com/v0/b/one-roof-bb7ce.appspot.com/o/apart1.jpeg?alt=media&token=ef9567f0-aa4f-4370-a207-7afc1c22f022',
+	'https://firebasestorage.googleapis.com/v0/b/one-roof-bb7ce.appspot.com/o/apart2.jpeg?alt=media&token=b08cc3a8-f2b9-4a75-a8f6-4fa4ee7467c4'];
 
 describe('Listing Model', () => {
 	let listingMock;

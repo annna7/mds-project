@@ -15,6 +15,7 @@ import { useUser } from '@clerk/clerk-expo';
 import { useUserDetails } from '../contexts/UserDetailsContext';
 import { includes } from 'lodash';
 import userService from '../services/internal/userService';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 type PropertyCardProps = {
 	listing: IListing,
@@ -22,33 +23,36 @@ type PropertyCardProps = {
 	mode?: string,
 	backgroundColor?: string,
 	showCarousel?: boolean,
-	isFavorite: boolean, // New prop to indicate if the listing is a favorite
+	showFavorite: boolean
 };
+
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ listing,
 															  canOpen,
 															  mode,
 															  backgroundColor,
 															  showCarousel = true,
-															  isFavorite,
+															  showFavorite
 														  }) => {
 	useCustomFonts();
 
+	const getOpenMessage = useCallback(() => {
+		if (!listing.external) {
+			return 'Open';
+		} else if (listing.url?.startsWith('https://www.storia')) {
+			return 'Go to Storia';
+		} else {
+			return 'Go to Olx';
+		}
+	}, []);
+
 	const { favoriteListings, setFavoriteListings } = useUserDetails();
-	if(listing._id in favoriteListings)
-	{
-		isFavorite = true;
-	}
-	else
-	{
-		isFavorite = false;
-	}
+	const [isFavorite, setIsFavorite] = useState(listing._id in favoriteListings);
 	const { navigate } = useNavigation();
 	const width = Dimensions.get('window').width;
 	const [pressed, setPressed] = useState(isFavorite); // State to manage pressed state of the button
 
 	const { user } = useUser();
-	console.error(useUserDetails().favoriteListings);
 	const open = useCallback(() => {
 		if (!listing.external) {
 			navigate('Listing', { id: listing._id });
@@ -60,37 +64,34 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ listing,
 	const updateFavoriteListings = async (updatedFavorites: string[]) => {
 		try {
 			await userService.updateUser(user?.id ?? '', { favoriteListings: updatedFavorites });
-			useUserDetails().favoriteListings = updatedFavorites;
+			// useUserDetails().favoriteListings = updatedFavorites;
 		} catch (error) {
 			console.error('Failed to update favorite listings:', error);
-			// Handle error state or retry logic if needed
 		}
 	};
 
+	if (!user?.id) {
+		return <Spinner></Spinner>
+	}
+
 	const toggleFavorite = useCallback(async () => {
+		console.log('toggle fav');
 		setPressed((prev) => !prev);
-		isFavorite = !isFavorite;
+		setIsFavorite(!isFavorite);
 		const id_ = user?.id;
 		setFavoriteListings((prevFavorites) => {
 			if (prevFavorites.includes(listing._id)) {
 				const list = prevFavorites.filter(id => id !== listing._id);
-				if(user?.id) {
-					updateFavoriteListings(list);
-					console.error(list);
-				}
+				updateFavoriteListings(list);
 				return list;
 			} else {
 				const list = [...prevFavorites, listing._id];
-				if(user?.id) {
-					updateFavoriteListings(list);
-					console.error(list);
-				}
+				updateFavoriteListings(list);
 				return list;
 			}
 
 		});
 
-		// Here you can add logic to save the favorite status to a backend or global state
 	}, [listing._id, setFavoriteListings]);
 
 	return (
@@ -98,7 +99,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ listing,
 			<View style={styles.contentContainer}>
 				<View style={styles.imageContainer}>
 					{canOpen && (
-						<Button mode="elevated" style={styles.openButton} onPress={open}></Button>
+						<Button mode="elevated" style={styles.openButton} onPress={() => open()}>{getOpenMessage()}</Button>
 					)}
 					{showCarousel ? (
 						<Carousel
@@ -130,13 +131,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ listing,
 							contentFit="cover"
 						/>
 					)}
-					<MaterialCommunityIcons
-						name={(favoriteListings.includes(listing._id)) ? 'heart' : 'heart-outline'}
-						size={30}
+					{showFavorite && <MaterialCommunityIcons
+						name={(favoriteListings.includes(listing._id)) ? 'heart' : 'heart'}
+						size={40}
 						color={(favoriteListings.includes(listing._id)) ? 'red' : 'gray'}
 						style={styles.heartIcon}
 						onPress={toggleFavorite}
-					/>
+					/>}
 				</View>
 				<HeaderText paddingTop={0} paddingBottom={3} size={20}>
 					{listing.title} - {listing.price} €

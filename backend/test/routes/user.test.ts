@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import mongoose from 'mongoose';
-import { User } from '/home/mh/WebstormProjects/one-roof/backend/src/models/user'; // Update with the correct path
+import { User } from '../../src/models';
 
 const { expect } = chai;
 

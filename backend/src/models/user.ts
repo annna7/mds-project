@@ -22,7 +22,7 @@ const UserSchema = new Schema<IUser>({
 	profilePicture: { type: String },
 	onboardingStep: { type: Number, required: true, default: 1, min: 1, max: 3},
 	role: { type: String, required: true, enum: ['regularUser', 'landlord'] },
-	favoriteListings: [{ type: String, ref: 'Listing' }],
+	favoriteListings: [{ type: String }],
 },
 { timestamps: true });
 

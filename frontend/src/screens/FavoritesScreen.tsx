@@ -1,13 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {  View, ScrollView } from 'react-native';
 import PropertyCard from '../components/PropertyCard';
-import BottomSheet from '@gorhom/bottom-sheet';
-import styles from 'react-native-loading-spinner-overlay/lib/style';
 import { useUserDetails } from '../contexts/UserDetailsContext';
-import { BottomListingCard } from '../components';
+import { HeaderText } from '../components';
 import { listingService } from '../services';
 import { useUser } from '@clerk/clerk-expo';
-
+import { StyleSheet } from 'react-native';
 
 export const FavoritesScreen: React.FC = () => {
 	const { favoriteListings } = useUserDetails();
@@ -26,17 +24,33 @@ export const FavoritesScreen: React.FC = () => {
 			fetchListings();
 		}, [favoriteListings]);
 	return (
-		<ScrollView style={styles.container}>
-			{listings.map((listing) => (
-				<PropertyCard
-					key={listing._id} // Ensure each component in a list has a unique key prop
-					listing={listing}
-					isFavorite={favoriteListings.includes(listing._id)}
-					canOpen={true}
-					mode="contained"
-					backgroundColor="white"
-				/>
-			))}
-		</ScrollView>
+		<View style={styles.wrapper}>
+			<ScrollView style={styles.container}>
+				<HeaderText size={40}>
+					Check out your favorite listings!
+				</HeaderText>
+				{listings.map((listing) => (
+					<PropertyCard
+						key={listing._id}
+						listing={listing}
+						canOpen={true}
+						mode="contained"
+						showCarousel={false}
+						showFavorite={false}
+						backgroundColor="white"
+					/>
+				))}
+			</ScrollView>
+		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	'container': {
+		width: '100%',
+	},
+	'wrapper': {
+		marginTop: 50,
+		width: '100%'
+	}
+})

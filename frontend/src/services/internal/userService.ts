@@ -19,6 +19,7 @@ const userService = {
 		return callApi(`users/full/${userId}`);
 	},
 	async updateUser(userId: string, updates: Partial<IUserDetails>): Promise<IUser> {
+		console.log('favorite listings', updates.favoriteListings);
 		return callApi(`users/${userId}`, {
 			method: 'PUT',
 			body: updates,
