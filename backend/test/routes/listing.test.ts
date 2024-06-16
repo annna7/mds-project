@@ -10,7 +10,7 @@ import sinon from 'sinon';
 import mongoose from 'mongoose';
 const { expect } = chai;
 const landlordId = '663cb48ee88f928f9cb35f69';
-import {Listing} from '/home/mh/WebstormProjects/one-roof/backend/src/models/listing'; // Update with the correct path
+import {Listing} from '../src/models/listing';
 
 describe('Listing Model', () => {
 	let listingMock;

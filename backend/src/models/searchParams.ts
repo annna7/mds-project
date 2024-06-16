@@ -15,3 +15,4 @@ export interface ISearchParams {
 		shouldSearch: false,
 	},
 }
+
