@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet, KeyboardAvoidingView, Dimensions, Pressable} from 'react-native';
+import {Text, View, StyleSheet, KeyboardAvoidingView, Dimensions, Pressable, Alert} from 'react-native';
 import { Background } from "../components";
 import { Ionicons } from '@expo/vector-icons';
 import {TextInput} from "react-native-paper";
@@ -16,8 +16,9 @@ import { MessagesContainer } from "../components";
 import {io} from "socket.io-client";
 import { useUser } from '@clerk/clerk-expo';
 import { IMessage } from '../models/messageModel';
+import {API_HOST, API_PORT} from "@env";
 
-const API_HOST = 'http://192.168.191.115:3000';
+const ENDPOINT = `http://${API_HOST}:${API_PORT}`;
 
 type ChatMessagesScreenRouteProps = RouteProp<RootStackParamList, 'Message'>;
 let socket;
@@ -45,7 +46,7 @@ export const ChatMessagesScreen: React.FC = () => {
 
     console.log('TIP DIN SCREEN', type, initialReferenceId, referenceId);
     useEffect(() => {
-        socket = io(API_HOST, {transports: ['websocket']});
+        socket = io(ENDPOINT, {transports: ['websocket']});
         const roomId = userId < receiverId ?
             `${userId}-${receiverId}` :
             `${receiverId}-${userId}`;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, } from '@react-navigation/drawer';
 import { Caption, Drawer, Title, } from 'react-native-paper';
@@ -9,11 +9,48 @@ import { useUserDetails } from '../contexts/UserDetailsContext';
 import { capitalize } from '../utils';
 import Button from '../components/Button';
 import { UserRoleEnum } from '../enums';
+import {messageService} from "../services";
 
 export function DrawerContent(props: DrawerContentComponentProps) {
 	const { user } = useUser();
 	const { profilePictureUrl, role } = useUserDetails();
 	const { signOut } = useAuth();
+	const {socket} = useUserDetails();
+	const [hasNewMessage, setHasNewMessage] = useState(false);
+
+	useEffect(() => {
+		const fetchUserUnreadMessages = async () => {
+			console.log("Checking for new messages...");
+			const messages = await messageService.getUserUnreadMessages(user.id);
+			if (messages.length !== 0) {
+				setHasNewMessage(true);
+			}
+		};
+		fetchUserUnreadMessages();
+
+		// Empty dependency array means this effect runs only once on mount
+	}, []);
+
+
+	useEffect(() => {
+		if (!socket) return;
+
+		const handleNewMessage = (message) => {
+			if(message.receiverId === user.id){
+				setHasNewMessage(true);
+
+			}
+		};
+
+		socket.on('messageReceived', handleNewMessage);
+		socket.on('updateMessages', ()=>{
+			setHasNewMessage(false);
+		})
+
+		return () => {
+			socket.off('messageReceived', handleNewMessage);
+		};
+	}, [socket]);
 
 	if (!user || !role) {
 		return null;
@@ -64,10 +101,18 @@ export function DrawerContent(props: DrawerContentComponentProps) {
 					/>
 					<DrawerItem
 						icon={({ color, size }) => (
-							<MaterialCommunityIcons name="message-outline" color={color} size={size} />
+							<View>
+								<MaterialCommunityIcons name="message-outline" color={color} size={size} />
+								{hasNewMessage && (
+									<View style={styles.notificationBadge} />
+								)}
+							</View>
 						)}
 						label="Chats"
-						onPress={() => { props.navigation.navigate('Chats'); }}
+						onPress={() => {
+							setHasNewMessage(false); // Reset the notification when navigating to Chats
+							props.navigation.navigate('Chats');
+						}}
 					/>
 					<Button
 						mode="elevated"
@@ -105,5 +150,14 @@ const styles = StyleSheet.create({
 	},
 	profilePictureContainer: {
 		marginLeft: 15
-	}
+	},
+	notificationBadge: {
+		position: 'absolute',
+		right: -5,
+		top: -5,
+		backgroundColor: 'red',
+		width: 10,
+		height: 10,
+		borderRadius: 5,
+	},
 });

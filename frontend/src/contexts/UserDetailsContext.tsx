@@ -1,5 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {createContext, useContext, useState, ReactNode, useEffect} from 'react';
 import { UserRoleEnum } from '../enums';
+import {Socket} from "socket.io";
+import {io} from "socket.io-client";
+import {API_HOST, API_PORT} from "@env";
 
 interface UserDetails {
 	onboardingStep: number,
@@ -12,6 +15,8 @@ interface UserDetails {
 	setUserId: React.Dispatch<React.SetStateAction<string>>,
 	contactedUsers: string[],
 	setContactedUsers: React.Dispatch<React.SetStateAction<string[]>>,
+	socket: Socket | null;
+	setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
 }
 
 const defaultUserDetails: UserDetails = {
@@ -25,6 +30,8 @@ const defaultUserDetails: UserDetails = {
 	setUserId:() => {},
 	contactedUsers: [],
 	setContactedUsers: () => {},
+	socket: null,
+	setSocket: () => {},
 };
 
 const UserDetailsContext = createContext<UserDetails>(defaultUserDetails);
@@ -39,9 +46,25 @@ export const UserDetailsProvider: React.FC<UserDetailsProviderProps> = ({ childr
 	const [role, setRole] = useState<UserRoleEnum>(UserRoleEnum.RegularUser);
 	const [userId, setUserId] = useState<string>('');
 	const [contactedUsers, setContactedUsers] = useState<string[]>([]);
+	const [socket, setSocket] = useState<Socket>(null);
+
+	useEffect(() => {
+		if (userId) {
+			const newSocket = io(`http://${API_HOST}:${API_PORT}`, {
+				query: { userId: userId }
+			});
+
+			setSocket(newSocket);
+
+			return () => {
+				newSocket.disconnect();
+			};
+		}
+	}, [userId]);
+
 
 	return (
-		<UserDetailsContext.Provider value={{ onboardingStep, setOnboardingStep, profilePictureUrl: profilePicture, setProfilePictureUrl: setProfilePicture, role, setRole, userId, setUserId, contactedUsers, setContactedUsers }}>
+		<UserDetailsContext.Provider value={{ onboardingStep, setOnboardingStep, profilePictureUrl: profilePicture, setProfilePictureUrl: setProfilePicture, role, setRole, userId, setUserId, contactedUsers, setContactedUsers, socket, setSocket }}>
 			{children}
 		</UserDetailsContext.Provider>
 	);

@@ -64,7 +64,7 @@
 // 	);
 // }
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+import {StyleSheet, View, Text, ActivityIndicator, Alert} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-expo';
 import { tokenCache } from './src/auth/tokenCache';
@@ -80,11 +80,25 @@ import { AppNavigation } from './src/navigation';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SignInScreen from './src/screens/SignInScreen';
 import { useCustomFonts } from './src/hooks/useCustomFonts';
+import {useNotificationManager} from "./src/hooks/useNotificationManager";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 	const [appIsReady, setAppIsReady] = useState(false);
+	const { subscribe, unsubscribe } = useNotificationManager();
+
+	useEffect(() => {
+		const handleNewMessage = (message) => {
+			Alert.alert("New Message", message.text);
+		};
+		console.log('subscribe');
+		subscribe('messageReceived', handleNewMessage);
+		return () => {
+			console.log("unsubscribe");
+			unsubscribe('messageReceived', handleNewMessage);
+		};
+	}, [subscribe, unsubscribe]);
 
 	useEffect(() => {
 		async function prepare() {

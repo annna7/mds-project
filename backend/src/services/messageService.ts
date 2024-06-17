@@ -1,5 +1,6 @@
 import e from "express";
 import {IMessage, Message} from "../models";
+import {$and} from "sift";
 
 
 export const MessageService = {
@@ -17,6 +18,15 @@ export const MessageService = {
         });
         return messages;
     },
+
+    getUserUnreadMessages: async(userClerkId) => {
+        const messages = await Message.find({
+            // receiverId: userClerkId,
+            isRead: false
+        });
+        return messages;
+    },
+
     updateMessage: async(id, update) =>{
         return Message.findOneAndUpdate({_id: id}, update);
     }
