@@ -57,7 +57,7 @@ export const ListingScreen: React.FC = ({navigation}) => {
 					/>
 					<PropertyDetails listing = {listing}/>
 					<Text style={styles.description}>{listing.description}</Text>
-					<ReachOutToUser message={'Contact the Landlord!'} userToReachOutToId = {listing.landlordId} referenceId = {listing._id}/>
+					<ReachOutToUser message={'Contact the Landlord!'} userToReachOutToId = {listing.landlordId} type={'listing'} referenceId = {listing._id}/>
 				</Card>
 			</ScrollView>
 

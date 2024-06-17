@@ -8,11 +8,13 @@ export const messageService = {
     async getConversationMessages (senderId: string, receiverId: string): Promise<IMessage[]> {
         return callApi(`messages/${senderId}/${receiverId}`);
     },
+    async getUserUnreadMessages(userClerkId: string): Promise<IMessage[]> {
+        return callApi(`messages/unreadMessages/${userClerkId}`);
+    },
     async updateMessage (id: string, data: any): Promise<IMessage> {
         return callApi(`messages/${id}`, {
             method: 'PUT',
             body:data
         });
-
     }
 };

@@ -27,6 +27,19 @@ export const MessageController = {
         }
     },
 
+    async getUserUnreadMessages(req: Request, res: Response) {
+        try {
+            const {userClerkId }= req.params;
+            const messages = await MessageService.getUserUnreadMessages(userClerkId);
+            if(!messages){
+                return res.status(404).json({ error: 'Failed to get user unread message' });
+            }
+            res.json(messages);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to get userUnread messages' });
+        }
+    },
+
     async updateMessage(req: Request, res: Response) {
         try{
             const messageId = req.params.id;

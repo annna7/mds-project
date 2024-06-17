@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useSignUp } from '@clerk/clerk-expo';
+import { useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { Background } from '../components';
 import { TextInput } from '../components';
 import Button from '../components/Button';
@@ -7,6 +7,8 @@ import Logo from '../components/Logo';
 
 export default function SignUpScreen() {
 	const { isLoaded, signUp, setActive } = useSignUp();
+	const { signIn, isLoaded: isLoadedSignIn, setActive: setActiveSignIn } = useSignIn();
+
 
 	const [firstName, setFirstName] = React.useState('');
 	const [lastName, setLastName] = React.useState('');

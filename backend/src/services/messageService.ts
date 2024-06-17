@@ -1,29 +1,33 @@
 import e from "express";
 import {IMessage, Message} from "../models";
+import {$and} from "sift";
 
-// MessageService handles operations related to message data
+
 export const MessageService = {
-
-
     uploadMessage: async(messageBody: IMessage) => {
-        const message = new Message(messageBody); // create a new Message instance
-        return message.save(); // save the message instance to the database
+        const message = new Message(messageBody);
+        return message.save();
     },
 
-    // getConversationMessages retrieves all messages between two users
-    // senderId: ID of the message sender
-    // receiverId: ID of the message receiver
     getConversationMessages: async(senderId, receiverId) => {
         const messages = await Message.find({
             $or: [
-                { senderId, receiverId }, // messages sent by sender to receiver
-                { senderId: receiverId, receiverId: senderId }, // messages sent by receiver to sender
+                { senderId, receiverId },
+                { senderId: receiverId, receiverId: senderId },
             ],
         });
-        return messages; // return the retrieved messages
+        return messages;
     },
 
-    updateMessage: async(id, update) => {
-        return Message.findOneAndUpdate({_id: id}, update); // find message by ID and update it
+    getUserUnreadMessages: async(userClerkId) => {
+        const messages = await Message.find({
+            // receiverId: userClerkId,
+            isRead: false
+        });
+        return messages;
+    },
+
+    updateMessage: async(id, update) =>{
+        return Message.findOneAndUpdate({_id: id}, update);
     }
 }

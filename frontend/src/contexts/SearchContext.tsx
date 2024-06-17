@@ -37,8 +37,9 @@ export interface SearchContextState {
 		priceRange?: { min: number, max: number },
 		bedrooms?: number,
 		bathrooms?: number,
-		amenities: RentalAmenitiesEnum[],
-		provider: TypeOfProviderEnum,
+		amenities?: RentalAmenitiesEnum[],
+		provider?: TypeOfProviderEnum,
+		recommend?: number
 	},
 }
 
@@ -52,6 +53,7 @@ const SearchContext = createContext<{
 	setFilters: React.Dispatch<React.SetStateAction<SearchContextState['filters']>>,
 	setIsWaitingForSearch: React.Dispatch<React.SetStateAction<boolean>>,
 	setWasExternalSearchPerformed: React.Dispatch<React.SetStateAction<boolean>>,
+	setRecommend: React.Dispatch<React.SetStateAction<number>>
 }>(null!);
 
 export const useSearchContext = () => useContext(SearchContext);
@@ -75,6 +77,7 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 		bathrooms: NumberOfBathroomsEnum.Any,
 		amenities: [],
 		provider: TypeOfProviderEnum.Any,
+		recommend: -1,
 	});
 	const [isWaitingForSearch, setIsWaitingForSearch] = useState<boolean>(false);
 	const [wasExternalSearchPerformed, setWasExternalSearchPerformed] = useState<boolean>(false);
@@ -127,7 +130,7 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 		setReviews,
 		setFilters,
 		setIsWaitingForSearch,
-		setWasExternalSearchPerformed
+		setWasExternalSearchPerformed,
 	}), [triggerSearch, wasExternalSearchPerformed, isWaitingForSearch, region, searchType, listings, reviews, filteredListings, filteredReviews, filters]);
 
 

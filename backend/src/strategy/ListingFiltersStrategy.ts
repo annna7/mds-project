@@ -2,15 +2,15 @@ import { ISearchStrategy } from './ISearchStrategy';
 import { IListing, ISearchParams } from '../models';
 import { FilterQuery } from 'mongoose';
 
-class ListingFiltersStrategy implements ISearchStrategy {
-	getQuery({ filters }: ISearchParams): FilterQuery<IListing> {
+export class ListingFiltersStrategy implements ISearchStrategy {
+	getQuery(filters: any): FilterQuery<IListing> {
 		const query: FilterQuery<IListing> = {};
 
 		if (filters.roomType && filters.roomType !== 'any') {
 			query.type = filters.roomType;
 		}
 
-		if (filters.providerType && filters.providerType !== 'any') {
+		if (filters.provider && filters.provider !== 'any') {
 			if (filters.provider === 'storia') {
 				query.url = { $regex: '^https://www.storia' };
 			} else if (filters.provider === 'olx') {
@@ -36,6 +36,7 @@ class ListingFiltersStrategy implements ISearchStrategy {
 			query.amenities = { $all: filters.amenities };
 		}
 
+		console.error(query);
 		return query;
 	}
 }

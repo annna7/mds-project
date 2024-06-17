@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 import { Button, HeaderText } from '../components';
 import { NumberOfBathroomsEnum, NumberOfBedroomsEnum, PropertyTypeEnum, TypeOfProviderEnum } from '../enums';
@@ -13,7 +13,6 @@ import { useSearchContext } from '../contexts/SearchContext';
 import { debounce } from 'lodash';
 
 export const FiltersScreen = ({ navigation }) => {
-	const LoadFonts = async () => { await useCustomFonts(); };
 	const [cleared, setCleared] = useState(false);
 	const { state, setFilters, triggerSearch } = useSearchContext();
 	const { filters } = state;
@@ -25,6 +24,15 @@ export const FiltersScreen = ({ navigation }) => {
 	const bathroomsRef = useRef(filters.bathrooms);
 	const providerRef = useRef(filters.provider || TypeOfProviderEnum.Any);
 
+	const recommendOptions = [
+		{ label: 'Any', value: -1},
+		{ label: '1', value: 1 },
+		{ label: '2', value: 2 },
+		{ label: '3', value: 3 },
+		{ label: '4', value: 4 },
+		{ label: '5', value: 5 },
+	];
+
 	const clearFilters = () => {
 		setFilters({
 			roomType: PropertyTypeEnum.Any,
@@ -33,6 +41,7 @@ export const FiltersScreen = ({ navigation }) => {
 			bathrooms: NumberOfBathroomsEnum.Any,
 			amenities: [],
 			provider: TypeOfProviderEnum.Any,
+			recommend: -1,
 		});
 		setCleared(true);
 	};
@@ -112,102 +121,127 @@ export const FiltersScreen = ({ navigation }) => {
 		providerRef.current = value;
 	}, 50), [filters]);
 
-	return (
+	const propertyFilters = (
 		<View style={styles.container}>
-			<HeaderText paddingBottom={10} textAlign="left" size={17}>Property Type:</HeaderText>
-			<CustomSwitchSelector
-				options={[
-					{ label: 'Any', value: PropertyTypeEnum.Any },
-					{ label: 'Studio', value: PropertyTypeEnum.Studio },
-					{ label: 'Apartment', value: PropertyTypeEnum.Apartment },
-					{ label: 'House', value: PropertyTypeEnum.House },
-				]}
-				onPress={handleRoomChange}
-				value={roomTypeRef.current}
-				mode="green"
-			/>
+		<HeaderText paddingBottom={10} textAlign="left" size={17}>Property Type:</HeaderText>
+	<CustomSwitchSelector
+		options={[
+			{ label: 'Any', value: PropertyTypeEnum.Any },
+			{ label: 'Studio', value: PropertyTypeEnum.Studio },
+			{ label: 'Apartment', value: PropertyTypeEnum.Apartment },
+			{ label: 'House', value: PropertyTypeEnum.House },
+		]}
+		onPress={handleRoomChange}
+		value={roomTypeRef.current}
+		mode="green"
+	/>
 
-			<HeaderText paddingBottom={10} textAlign="left" size={17}>Source of Listing:</HeaderText>
-			<CustomSwitchSelector
-				options={[
-					{ label: 'Any', value: TypeOfProviderEnum.Any },
-					{ label: 'Internal', value: TypeOfProviderEnum.Internal },
-					{ label: 'Storia', value: TypeOfProviderEnum.Storia },
-					{ label: 'Olx', value: TypeOfProviderEnum.Olx },
-				]}
-				onPress={handleProviderChange}
-				value={filters.provider}
-				mode="green"
-			/>
+	<HeaderText paddingBottom={10} textAlign="left" size={17}>Source of Listing:</HeaderText>
+	<CustomSwitchSelector
+		options={[
+			{ label: 'Any', value: TypeOfProviderEnum.Any },
+			{ label: 'Internal', value: TypeOfProviderEnum.Internal },
+			{ label: 'Storia', value: TypeOfProviderEnum.Storia },
+			{ label: 'Olx', value: TypeOfProviderEnum.Olx },
+		]}
+		onPress={handleProviderChange}
+		value={filters.provider}
+		mode="green"
+	/>
 
-			<HeaderText textAlign="left" size={17}>Price Range (monthly fee):</HeaderText>
-			<View style={styles.flexContainer}>
-				<View style={styles.priceContainer}>
-					<Text style={styles.priceStyling}>{priceRangeRef.current[0]} € </Text>
-					<Text> - </Text>
-					<Text style={styles.priceStyling}>{priceRangeRef.current[1]} € </Text>
-				</View>
-				<MultiSlider
-					trackStyle={{ height: 3 }}
-					values={priceRangeRef.current}
-					sliderLength={300}
-					onValuesChangeFinish={handlePriceChange}
-					min={MIN_PRICE}
-					max={MAX_PRICE}
-					step={1}
-					allowOverlap={false}
-					snapped
-					minMarkerOverlapDistance={40}
-				/>
-			</View>
-
-			<HeaderText paddingTop={0} paddingBottom={5} textAlign="left" size={17}>Number of Bedrooms:</HeaderText>
-			<CustomSwitchSelector
-				options={[
-					{ label: 'Any', value: NumberOfBedroomsEnum.Any },
-					{ label: '1', value: NumberOfBedroomsEnum.One },
-					{ label: '2', value: NumberOfBedroomsEnum.Two },
-					{ label: '3', value: NumberOfBedroomsEnum.Three },
-					{ label: '4+', value: NumberOfBedroomsEnum.FourOrMore }
-				]}
-				mode="green"
-				value={filters.bedrooms}
-				onPress={handleChangeBedrooms}
-				disabled={roomTypeRef.current === PropertyTypeEnum.Studio}
-			/>
-
-			<HeaderText paddingBottom={5} textAlign="left" size={17}>Number of Bathrooms:</HeaderText>
-			<CustomSwitchSelector
-				options={[
-					{ label: 'Any', value: NumberOfBathroomsEnum.Any },
-					{ label: '1', value: NumberOfBathroomsEnum.One },
-					{ label: '2', value: NumberOfBathroomsEnum.Two },
-					{ label: '3+', value: NumberOfBathroomsEnum.ThreeOrMore },
-				]}
-				mode="green"
-				value={filters.bathrooms}
-				onPress={handleChangeBathrooms}
-				disabled={roomTypeRef.current === PropertyTypeEnum.Studio}
-			/>
-
-			<HeaderText textAlign="left" size={17}>Amenities (only for internal listings):</HeaderText>
-			<ScrollView>
-				{amenitiesArray.map((amenity, index) => (
-					<Checkbox.Item
-						labelStyle={styles.checkbox}
-						key={index}
-						label={amenity[1]}
-						disabled={providerRef.current !== TypeOfProviderEnum.Internal && providerRef.current !== TypeOfProviderEnum.Any}
-						status={filters.amenities.includes(amenity[0]) ? 'checked' : 'unchecked'}
-						onPress={() => handleSelectAmenity(amenity[0])}
-					/>
-				))}
-			</ScrollView>
-			<View style={[styles.buttonsContainer]}>
-				<Button width={'auto'} mode={'contained-tonal'} onPress={clearFilters}> Clear All </Button>
-				<Button width={'auto'} mode={'contained-tonal'} onPress={handleSearch}> Search </Button>
-			</View>
+	<HeaderText textAlign="left" size={17}>Price Range (monthly fee):</HeaderText>
+	<View style={styles.flexContainer}>
+		<View style={styles.priceContainer}>
+			<Text style={styles.priceStyling}>{priceRangeRef.current[0]} € </Text>
+			<Text> - </Text>
+			<Text style={styles.priceStyling}>{priceRangeRef.current[1]} € </Text>
 		</View>
+		<MultiSlider
+			trackStyle={{ height: 3 }}
+			values={priceRangeRef.current}
+			sliderLength={300}
+			onValuesChangeFinish={handlePriceChange}
+			min={MIN_PRICE}
+			max={MAX_PRICE}
+			step={1}
+			allowOverlap={false}
+			snapped
+			minMarkerOverlapDistance={40}
+		/>
+	</View>
+
+	<HeaderText paddingTop={0} paddingBottom={5} textAlign="left" size={17}>Number of Bedrooms:</HeaderText>
+	<CustomSwitchSelector
+		options={[
+			{ label: 'Any', value: NumberOfBedroomsEnum.Any },
+			{ label: '1', value: NumberOfBedroomsEnum.One },
+			{ label: '2', value: NumberOfBedroomsEnum.Two },
+			{ label: '3', value: NumberOfBedroomsEnum.Three },
+			{ label: '4+', value: NumberOfBedroomsEnum.FourOrMore }
+		]}
+		mode="green"
+		value={filters.bedrooms}
+		onPress={handleChangeBedrooms}
+		disabled={roomTypeRef.current === PropertyTypeEnum.Studio}
+	/>
+
+	<HeaderText paddingBottom={5} textAlign="left" size={17}>Number of Bathrooms:</HeaderText>
+	<CustomSwitchSelector
+		options={[
+			{ label: 'Any', value: NumberOfBathroomsEnum.Any },
+			{ label: '1', value: NumberOfBathroomsEnum.One },
+			{ label: '2', value: NumberOfBathroomsEnum.Two },
+			{ label: '3+', value: NumberOfBathroomsEnum.ThreeOrMore },
+		]}
+		mode="green"
+		value={filters.bathrooms}
+		onPress={handleChangeBathrooms}
+		disabled={roomTypeRef.current === PropertyTypeEnum.Studio}
+	/>
+
+	<HeaderText textAlign="left" size={17}>Amenities (only for internal listings):</HeaderText>
+
+	<ScrollView>
+		{amenitiesArray.map((amenity, index) => (
+			<Checkbox.Item
+				labelStyle={styles.checkbox}
+				key={index}
+				label={amenity[1]}
+				disabled={providerRef.current !== TypeOfProviderEnum.Internal && providerRef.current !== TypeOfProviderEnum.Any}
+				status={filters.amenities.includes(amenity[0]) ? 'checked' : 'unchecked'}
+				onPress={() => handleSelectAmenity(amenity[0])}
+			/>
+		))}
+	</ScrollView>
+		</View>
+			);
+
+	const buttons = (
+		<View style={[styles.buttonsContainer]}>
+			<Button width={'auto'} mode={'contained-tonal'} onPress={clearFilters}> Clear All </Button>
+			<Button width={'auto'} mode={'contained-tonal'} onPress={handleSearch}> Search </Button>
+		</View>
+	)
+
+	const reviewFilters = (
+		<View style={styles.container}>
+			<HeaderText paddingBottom={20} textAlign="left" size={20}>Recommendation Rating:</HeaderText>
+			<CustomSwitchSelector
+				options={recommendOptions}
+				initial={2}
+				onPress={(value) => setFilters({...filters, recommend: value })}
+				value={filters.recommend}
+				mode="green"
+			/>
+		</View>
+	)
+
+	return (
+		<React.Fragment>
+			{state.searchType === 'listings' ? propertyFilters : reviewFilters}
+			<View style={{height: 100}}/>
+			{buttons}
+		</React.Fragment>
 	);
 };
 

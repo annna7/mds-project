@@ -2,7 +2,7 @@ import { IListing, IReview, ISearchParams } from '../models';
 import { FilterQuery } from 'mongoose';
 import { ISearchStrategy } from './ISearchStrategy';
 
-class GeospatialSearchStrategy implements ISearchStrategy {
+export class GeospatialSearchStrategy implements ISearchStrategy {
 	getQuery({ region }: ISearchParams): FilterQuery<IListing | IReview> {
 		const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
 		const north = latitude + latitudeDelta / 2;

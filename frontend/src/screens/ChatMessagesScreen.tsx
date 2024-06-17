@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet, KeyboardAvoidingView, Dimensions, Pressable} from 'react-native';
+import {Text, View, StyleSheet, KeyboardAvoidingView, Dimensions, Pressable, Alert} from 'react-native';
 import { Background } from "../components";
 import { Ionicons } from '@expo/vector-icons';
 import {TextInput} from "react-native-paper";
@@ -16,8 +16,9 @@ import { MessagesContainer } from "../components";
 import {io} from "socket.io-client";
 import { useUser } from '@clerk/clerk-expo';
 import { IMessage } from '../models/messageModel';
+import {API_HOST, API_PORT} from "@env";
 
-const API_HOST = 'http://192.168.191.115:3000';
+const ENDPOINT = `http://${API_HOST}:${API_PORT}`;
 
 type ChatMessagesScreenRouteProps = RouteProp<RootStackParamList, 'Message'>;
 let socket;
@@ -43,8 +44,9 @@ export const ChatMessagesScreen: React.FC = () => {
     const [referenceId, setReferenceId] = useState(initialReferenceId);
     const [type, setType] = useState(initialType);
 
+    console.log('TIP DIN SCREEN', type, initialReferenceId, referenceId);
     useEffect(() => {
-        socket = io(API_HOST, {transports: ['websocket']});
+        socket = io(ENDPOINT, {transports: ['websocket']});
         const roomId = userId < receiverId ?
             `${userId}-${receiverId}` :
             `${receiverId}-${userId}`;
@@ -71,10 +73,10 @@ export const ChatMessagesScreen: React.FC = () => {
     }, []);
 
     const checkIfIncludeType = () => {
-        console.log(referenceId);
         const alreadyDiscussed = messages.filter((msg: IMessage) => msg.referenceId === referenceId);
-        console.log(alreadyDiscussed, messages);
-        return alreadyDiscussed.length == 0 ? initialType : null;
+        const verdict = alreadyDiscussed.length == 0 ? initialType : null;
+        console.log(verdict, 'INCLUDE MESSAGE');
+        return verdict;
     }
 
     const getConversationMessages = async () => {
@@ -107,11 +109,11 @@ export const ChatMessagesScreen: React.FC = () => {
             userId
         );
         socket.emit('newMessage', newMessage);
-        // After the first message is sent, set referenceId and type to null
-        if (referenceId !== null || type !== null) {
-            setReferenceId(null);
-            setType(null);
-        }
+        // // After the first message is sent, set referenceId and type to null
+        // if (referenceId !== null || type !== null) {
+        //     setReferenceId(null);
+        //     setType(null);
+        // }
 
         setMessage('');
         getConversationMessages();

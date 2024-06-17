@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Alert, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useUserDetails} from "../contexts/UserDetailsContext";
 import { useUserData, useUserDataByClerkId } from '../hooks/useUserData';
@@ -8,13 +8,14 @@ import {useCustomFonts} from "../hooks/useCustomFonts";
 import {theme} from "../theme";
 import { useUser } from '@clerk/clerk-expo';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useNotificationManager} from "../hooks/useNotificationManager";
 
 export const ChatsScreen: React.FC = () => {
-	const LoadFonts = async () => { await useCustomFonts(); };
 	const navigation = useNavigation();
 	// const {userId, } = useUserDetails();
 	// const {user: currentUser} = useUserData(userId)
 	const { user } = useUser();
+	const { subscribe, unsubscribe } = useNotificationManager();
 	console.log('CLERK ID FROM CHATS', user.id);
 
 	const { user: currentUser, isLoading, error } = useUserDataByClerkId(user?.id ?? '');
@@ -31,6 +32,18 @@ export const ChatsScreen: React.FC = () => {
 			</View>
 		);
 	}
+	//
+	// useEffect(() => {
+	// 	const handleNewMessage = (message) => {
+	// 		Alert.alert("New Message", message.text);
+	// 	};
+	//
+	// 	unsubscribe('messageReceived', handleNewMessage);
+	// 	return () => {
+	// 		console.log("Chats screen unmounted");
+	// 		subscribe('messageReceived', handleNewMessage);
+	// 	};
+	// }, []);
 
 	return (
 		<ScrollView showsVerticalScrollIndicator={false} style={styles.container}>

@@ -62,7 +62,6 @@ export const AppNavigation = () => {
 					<Drawer.Screen name="Home" component={OnboardingDecisionScreen} />
 					<Drawer.Screen name="SignIn" component={SignInScreen}/>
 					<Drawer.Screen name="SignUp" component={SignUpScreen}/>
-					<Drawer.Screen name="Alerts" component={AlertsScreen} />
 					<Drawer.Screen name="Chats" component={ChatsScreen} />
 					<Drawer.Screen name="CreateReview" component={CreateReviewScreen} />
 					<Drawer.Screen name="CreateListing" component={CreateListingScreen} />
