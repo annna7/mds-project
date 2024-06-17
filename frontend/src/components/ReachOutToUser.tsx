@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card, Text } from 'react-native-paper';
 import { Image, StyleSheet, View } from 'react-native';
 import { theme } from '../theme';
-import { useUserData, useUserDataByClerkId } from '../hooks/useUserData';
+import { useUserDataByClerkId } from '../hooks/useUserData';
 import Button from '../components/Button';
 import { useNavigation } from '@react-navigation/native';
 
+//Display user details and a button to send a message
 const ReachOutToUser: React.FC<any> = ({ message, userToReachOutToId, referenceId, type }) => {
 	const { navigate } = useNavigation();
-
 	const { user: landlord } = useUserDataByClerkId(userToReachOutToId);
+
+	// If the landlord data is not available, show an error message
 	if (landlord == null) {
 		return <Text>Error - landlord not found</Text>;
 	}
 
+	// Formatting the creation date of the landlord user
 	const userCreatedAt = new Date(landlord.createdAt);
 	const year = userCreatedAt.getFullYear();
 	const monthNames = [
@@ -23,10 +26,11 @@ const ReachOutToUser: React.FC<any> = ({ message, userToReachOutToId, referenceI
 	const monthName = monthNames[userCreatedAt.getMonth()];
 	const yearMonth = `${monthName} ${year}`;
 
+	// Handler function to navigate to the Messages screen
 	const handleSendMessage = async () => {
 		console.log('In landlordDetails', referenceId);
 		console.log('message type', type);
-		navigate('Messages', { receiverId: landlord.clerkId, referenceId: referenceId, type: type })
+		navigate('Messages', { receiverId: landlord.clerkId, referenceId: referenceId, type: type });
 	}
 
 	return (
@@ -43,7 +47,8 @@ const ReachOutToUser: React.FC<any> = ({ message, userToReachOutToId, referenceI
 		</Card>
 	);
 };
-//TODO: add on press for button
+
+// Styles for the component
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,

@@ -4,8 +4,6 @@ import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { ItemList } from './ItemList';
 import { useSearchContext } from '../contexts/SearchContext';
 import { useCustomFonts } from '../hooks/useCustomFonts';
-import {useNavigation} from "@react-navigation/native";
-import {useUserDetails} from "../contexts/UserDetailsContext";
 import { ActivityIndicator } from 'react-native-paper';
 
 export const BottomBar = () => {
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
 	},
 	newListingButton: {
 		marginBottom: 80,
-		marginRight: 10, // TODO: Fix hardcoding?
+		marginRight: 10,
 		width: 110,
 		alignSelf:'flex-end',
 	}

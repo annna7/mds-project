@@ -1,7 +1,8 @@
 import { connect, seedDatabase } from './database';
 import app from './app';
-import {Server} from "socket.io";
-import {createServer} from "node:http";
+///import {Server} from 'socket.io';
+import {createServer} from 'node:http';
+import { Server } from 'socket.io';
 
 const port = app.get('port');
 
@@ -15,8 +16,8 @@ io.on('connection', (socket) => {
 
 	socket.on('join', (roomId) => {
 		socket.join(roomId);
-		console.log("Socket joined room ", roomId);
-	})
+		console.log('Socket joined room ', roomId);
+	});
 
 	socket.on('newMessage', (msg) => {
 		const roomId = msg.senderId < msg.receiverId ?
@@ -24,7 +25,7 @@ io.on('connection', (socket) => {
 			`${msg.receiverId}-${msg.senderId}`;
 		console.log(`New message sent to ${roomId}`);
 		socket.broadcast.emit('messageReceived', msg);
-	})
+	});
 
 	socket.on('updateMessages', (msg) =>{
 		const roomId = msg.senderId < msg.receiverId ?
@@ -32,9 +33,9 @@ io.on('connection', (socket) => {
 			`${msg.receiverId}-${msg.senderId}`;
 		socket.broadcast.emit('updateMessages', msg);
 
-	})
+	});
 
-})
+});
 
 connect().then(() => {
 	console.log('Database connected');

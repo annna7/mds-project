@@ -3,7 +3,6 @@ import { SearchTypeEnum } from '../enums';
 import { theme } from '../theme';
 import React from 'react';
 
-// TODO: fix any
 export const CustomSwitchSelector: React.FC<any> = ({ options, mode, value, onPress, disabled, width }) => {
 	const buttonColor = mode === 'green' ? theme.colors.inverseSurface : theme.colors.text;
 	const borderColor = mode === 'green' ? theme.colors.text : theme.colors.secondary;

@@ -5,6 +5,7 @@ import { theme } from '../theme';
 import { Button } from './Button';
 import { useNavigation } from '@react-navigation/native';
 
+//Individual messages with optional linked listing or review
 export const MessageItem = ({ msg, index, listings, reviews, userId }) => {
 	const showListing = msg.referenceId != null && msg.type === 'listing';
 	const showReview = msg.referenceId != null && msg.type === 'review';

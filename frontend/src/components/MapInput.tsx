@@ -19,7 +19,7 @@ export const MapInput: React.FC<MapInputProps> = ({ onLocationChange }) => {	con
 				setErrorMsg('Permission to access location was denied');
 				return;
 			}
-
+			// Get the real-time location of the user
 			let location = await Location.getCurrentPositionAsync({});
 			setLocation(location);
 			setRegion({

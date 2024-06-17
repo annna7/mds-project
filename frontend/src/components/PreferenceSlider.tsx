@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { Slider } from 'react-native-awesome-slider';
 import { useSharedValue } from 'react-native-reanimated';
-import { useCustomFonts } from '../hooks/useCustomFonts';
 import { HeaderText } from './HeaderText';
 import { theme } from '../theme';
 
@@ -15,16 +13,7 @@ interface PreferenceSliderProps {
 }
 
 export const PreferenceSlider: React.FC<PreferenceSliderProps> = ({ question, leftText, rightText, onValueChange }) => {
-	const LoadFonts = async () => { await useCustomFonts(); };
 	const [value, setValue] = useState(3);
-
-	const handleValueChange = (newValue: number) => {
-		setValue(newValue);
-		if (onValueChange) {
-			onValueChange(newValue);
-		}
-	};
-
 	const min = useSharedValue(1);
 	const max = useSharedValue(5);
 	const progress = useSharedValue(3);
